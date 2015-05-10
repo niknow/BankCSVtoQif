@@ -11,7 +11,7 @@ setup(
     author='Nikolai Nowaczyk',
     author_email='mail@nikno.de',
     license='GNU GPLv2',
-    url='https://github.com/niknow/BankCSVtoQif',
+    url='https://github.com/niknow/BankCSVtoQif/tree/master/bankcsvtoqif',
     packages=find_packages(),
     install_requires=['monthdelta']
 )

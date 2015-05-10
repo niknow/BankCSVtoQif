@@ -26,6 +26,7 @@ from bankcsvtoqif.smartlabeler import Replacement
 from datetime import datetime
 import argparse
 
+
 # This configures parsing of db_giro. Do not touch unless you know what you are doing.
 class DBGiroParserFunctions(BankAccountParserFunctions):
     """ Implements a method that gets as an input a line of csv of this bank and returns the
@@ -53,7 +54,7 @@ class DBGiroParserFunctions(BankAccountParserFunctions):
 # optional: configure replacements (see Replacement class for documentation)
 replacements = []
 # replacements = [
-#    Replacement('cryptic number 12345', 'Rent', 'Expenses:Flat:Rent', 1),
+# Replacement('cryptic number 12345', 'Rent', 'Expenses:Flat:Rent', 1),
 #]
 
 # configures db_giro account
@@ -75,15 +76,10 @@ args = parser.parse_args()
 if args.qif_file:
     qfile = args.qif_file
 else:
-    qfile = args.csv_file[:-3]+'qif'
+    qfile = args.csv_file[:-3] + 'qif'
 
 # run conversion and print result
 data_manager = DataManager(args.csv_file, qfile, db_giro)
 data_manager.csv_to_qif()
 for transaction in data_manager.transactions:
     print transaction
-
-
-
-
-

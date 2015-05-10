@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 # -*- coding: utf-8 -*-
 
 
@@ -22,7 +24,7 @@
 from bankcsvtoqif.bankcsv import DataManager, BankAccountConfig, BankAccountParserFunctions
 from bankcsvtoqif.smartlabeler import Replacement
 from datetime import datetime
-
+import argparse
 
 # This configures parsing of db_giro. Do not touch unless you know what you are doing.
 class DBGiroParserFunctions(BankAccountParserFunctions):
@@ -64,10 +66,24 @@ db_giro.source_account = 'Assets:Current Assets:Checking Account'
 db_giro.parser_functions = DBGiroParserFunctions
 db_giro.replacements = replacements
 
+# parse arguments
+parser = argparse.ArgumentParser(description='Smart conversion of csv files from a bank to qif.')
+parser.add_argument("csv_file", help="csv file you want to convert")
+parser.add_argument("qif_file", nargs='?', default='', help="name of qif file output")
+args = parser.parse_args()
+
+if args.qif_file:
+    qfile = args.qif_file
+else:
+    qfile = args.csv_file[:-3]+'qif'
+
 # run conversion and print result
-data_manager = DataManager('raw_csv_from_bank.csv',
-                           'converted_qif_file.qif',
-                           db_giro)
+data_manager = DataManager(args.csv_file, qfile, db_giro)
 data_manager.csv_to_qif()
 for transaction in data_manager.transactions:
     print transaction
+
+
+
+
+

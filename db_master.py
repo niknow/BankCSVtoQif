@@ -38,16 +38,15 @@ class DBGiroParserFunctions(BankAccountParserFunctions):
 
     @staticmethod
     def line_to_description(line):
-        description = line[2] + ' ' + line[3] + ' ' + line[4]
-        return ' '.join(description.split())
+        return line[2]
 
     @staticmethod
     def line_to_debit(line):
-        return BankAccountParserFunctions.normalize_amount(line[13])
+        return BankAccountParserFunctions.normalize_amount(line[6])
 
     @staticmethod
     def line_to_credit(line):
-        return BankAccountParserFunctions.normalize_amount(line[14])
+        return 0
 
 
 # optional: configure replacements (see Replacement class for documentation)
@@ -57,17 +56,17 @@ replacements = []
 #]
 
 # configures db_giro account
-db_giro = BankAccountConfig()
-db_giro.name = 'db_giro'
-db_giro.delimiter = ';'
-db_giro.quotechar = '"'
-db_giro.dropped_lines = 5
-db_giro.source_account = 'Assets:Current Assets:Checking Account'
-db_giro.parser_functions = DBGiroParserFunctions
-db_giro.replacements = replacements
+db_master = BankAccountConfig()
+db_master.name = 'db_giro'
+db_master.delimiter = ';'
+db_master.quotechar = '"'
+db_master.dropped_lines = 5
+db_master.source_account = 'Liabilities:Deutsche Bank Master Card'
+db_master.parser_functions = DBGiroParserFunctions
+db_master.replacements = replacements
 
 # parse arguments
-parser = argparse.ArgumentParser(description='Smart conversion of csv files from db_giro to qif.')
+parser = argparse.ArgumentParser(description='Smart conversion of csv files from db_master to qif.')
 parser.add_argument("csv_file", help="csv file you want to convert")
 parser.add_argument("qif_file", nargs='?', default='', help="name of qif file output")
 args = parser.parse_args()
@@ -78,7 +77,7 @@ else:
     qfile = args.csv_file[:-3]+'qif'
 
 # run conversion and print result
-data_manager = DataManager(args.csv_file, qfile, db_giro)
+data_manager = DataManager(args.csv_file, qfile, db_master)
 data_manager.csv_to_qif()
 for transaction in data_manager.transactions:
     print transaction

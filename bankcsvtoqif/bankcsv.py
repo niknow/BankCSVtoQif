@@ -40,7 +40,7 @@ def consume(iterator, n):
 class Transaction(object):
     """ Represents a transaction obtained from csv-file. """
 
-    def __init__(self, date, description, debit, credit, account='Imbalance-EUR'):
+    def __init__(self, date, description, debit, credit, account):
         self.date = date
         self.description = description
         self.debit = debit
@@ -96,6 +96,7 @@ class BankAccountConfig(object):
         self.quotechar = '"'
         self.dropped_lines = 5
         self.source_account = 'Assets:Current Assets:Checking Account'
+        self.target_account = 'Imbalance-EUR'
         self.parser_functions = BankAccountParserFunctions
         self.replacements = None
 
@@ -122,7 +123,8 @@ class DataManager(object):
                 transaction = Transaction(par_fun.line_to_date(line),
                                           par_fun.line_to_description(line),
                                           par_fun.line_to_debit(line),
-                                          par_fun.line_to_credit(line))
+                                          par_fun.line_to_credit(line),
+                                          self.account_config.target_account)
                 self.transactions.append(transaction)
             except IndexError:
                 print 'skipping: %s' % line

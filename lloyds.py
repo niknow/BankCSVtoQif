@@ -27,7 +27,7 @@ from datetime import datetime
 import argparse
 
 
-# This configures parsing of db_giro. Do not touch unless you know what you are doing.
+# This configures parsing of lloyds. Do not touch unless you know what you are doing.
 class DBGiroParserFunctions(BankAccountParserFunctions):
     """ Implements a method that gets as an input a line of csv of this bank and returns the
         desired quantity, i.e. date, description, debit, credit """
@@ -56,15 +56,16 @@ replacements = []
 # Replacement('cryptic number 12345', 'Rent', 'Expenses:Flat:Rent', 1),
 #]
 
-# configures db_giro account
-db_giro = BankAccountConfig()
-db_giro.name = 'lloyds'
-db_giro.delimiter = ','
-db_giro.quotechar = '"'
-db_giro.dropped_lines = 1
-db_giro.source_account = 'Assets:Current Assets:Checking Account'
-db_giro.parser_functions = DBGiroParserFunctions
-db_giro.replacements = replacements
+# configures lloyds account
+lloyds = BankAccountConfig()
+lloyds.name = 'lloyds'
+lloyds.delimiter = ','
+lloyds.quotechar = '"'
+lloyds.dropped_lines = 1
+lloyds.source_account = 'Assets:Current Assets:Checking Account'
+lloyds.target_account = 'Imbalance-GBP'
+lloyds.parser_functions = DBGiroParserFunctions
+lloyds.replacements = replacements
 
 # parse arguments
 parser = argparse.ArgumentParser(description='Smart conversion of csv files from lloyds to qif.')
@@ -78,7 +79,7 @@ else:
     qfile = args.csv_file[:-3] + 'qif'
 
 # run conversion and print result
-data_manager = DataManager(args.csv_file, qfile, db_giro)
+data_manager = DataManager(args.csv_file, qfile, lloyds)
 data_manager.csv_to_qif()
 for transaction in data_manager.transactions:
     print transaction

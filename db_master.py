@@ -27,7 +27,7 @@ from datetime import datetime
 import argparse
 
 
-# This configures parsing of db_giro. Do not touch unless you know what you are doing.
+# This configures parsing of db_master. Do not touch unless you know what you are doing.
 class DBGiroParserFunctions(BankAccountParserFunctions):
     """ Implements a method that gets as an input a line of csv of this bank and returns the
         desired quantity, i.e. date, description, debit, credit """
@@ -56,13 +56,14 @@ replacements = []
 # Replacement('cryptic number 12345', 'Rent', 'Expenses:Flat:Rent', 1),
 #]
 
-# configures db_giro account
+# configures db_master account
 db_master = BankAccountConfig()
 db_master.name = 'db_master'
 db_master.delimiter = ';'
 db_master.quotechar = '"'
 db_master.dropped_lines = 5
 db_master.source_account = 'Liabilities:Deutsche Bank Master Card'
+db_master.target_account = 'Imbalance-EUR'
 db_master.parser_functions = DBGiroParserFunctions
 db_master.replacements = replacements
 

@@ -64,6 +64,7 @@ db_giro.delimiter = ';'
 db_giro.quotechar = '"'
 db_giro.dropped_lines = 5
 db_giro.source_account = 'Assets:Current Assets:Checking Account'
+db_giro.target_account = 'Imbalance-EUR'
 db_giro.parser_functions = DBGiroParserFunctions
 db_giro.replacements = replacements
 

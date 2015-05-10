@@ -25,8 +25,12 @@ from monthdelta import monthdelta
 class Replacement(object):
     """ A class to automatically handle replacements in transactions. If 'pattern' is matched in the
         original description of a transaction, the description is replaced by 'new_description' and the
-        target account 'account' is automatically added.
+        target account 'account' is automatically added. The 'append_date'-flag works as follows:
+        append_date = 0: nothing is appended to 'new_description'
+        append_date = 1: appends year-month to 'new_description' like 2015-05
+        append_date = 2: appends year-next_month to 'new_description' like 2015-06
     """
+
     def __init__(self, pattern=None, new_description=None, account=None, append_date=0):
         self.pattern = pattern
         self.new_description = new_description
@@ -52,6 +56,8 @@ class Replacement(object):
 
 
 class SmartLabeler(object):
+    """ Relabels descriptions of transactions using Replacements.  """
+
     def __init__(self):
         self.replacements = []
 

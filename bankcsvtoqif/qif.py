@@ -20,7 +20,7 @@
 
 
 class Qif(object):
-    """Interface to .qif-file"""
+    """ Interface to .qif-file. """
 
     def __init__(self, account):
         self.account = account
@@ -44,7 +44,7 @@ class Qif(object):
 
 
 class Transaction(object):
-    """A qif-Transaction"""
+    """ A qif-Transaction. """
 
     def __init__(self, date, account, description, amount):
         self.date = date

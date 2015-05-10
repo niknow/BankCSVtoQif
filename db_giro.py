@@ -50,7 +50,7 @@ class DBGiroParserFunctions(BankAccountParserFunctions):
 
 # optional: configure replacements (see Replacement class for documentation)
 replacements = []
-#replacements = [
+# replacements = [
 #    Replacement('cryptic number 12345', 'Rent', 'Expenses:Flat:Rent', 1),
 #]
 

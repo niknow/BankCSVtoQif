@@ -38,6 +38,8 @@ def consume(iterator, n):
 
 
 class Transaction(object):
+    """ Represents a transaction obtained from csv-file. """
+
     def __init__(self, date, description, debit, credit, account='Imbalance-EUR'):
         self.date = date
         self.description = description
@@ -86,6 +88,8 @@ class BankAccountParserFunctions(object):
 
 
 class BankAccountConfig(object):
+    """ Stores the configuration data to parse the csv from a specific account. """
+
     def __init__(self):
         self.name = ''
         self.delimiter = ';'
@@ -97,6 +101,8 @@ class BankAccountConfig(object):
 
 
 class DataManager(object):
+    """ Main class to interact with the user. """
+
     def __init__(self, csv_filename, qif_filename, account_config):
         self.csv_filename = csv_filename
         self.qif_filename = qif_filename

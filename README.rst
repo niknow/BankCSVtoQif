@@ -6,7 +6,7 @@ downloaded from a certain bank account generate a *.qif-file as an output. The *
 from financial software like gnucash. The advantage of qif over csv is that qif allows to store the target account
 of the transaction. In addition to the technical conversion, you can configure replacements that automatically
 relabel the description of a transaction if a certain string is matched and book this transaction to a pre-configured
- account. The rationale behind this is that many  transactions occur regularly and thus can be booked automatically.
+account. The rationale behind this is that many transactions occur regularly and thus can be booked automatically.
 
 **Project status:** Experimental.
 
@@ -23,8 +23,8 @@ Installation
     cd BankCSVtoQif
     python setup.py install
 
-* You can start using the example scripts `db_giro.py`, `db_master.py` or `lloyds.py` for a chechking account at
-Deutsche Bank, a Deutsche Bank Mastercard or a Lloyds bank checking account.
+* You can start using the example scripts `db_giro.py`, `db_master.py` or `lloyds.py` for a checking account at
+ Deutsche Bank, a Deutsche Bank Mastercard or a Lloyds bank checking account.
 
 
 Example: Deutsche Bank Chechking Account

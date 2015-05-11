@@ -60,11 +60,11 @@ replacements = []
 # configures db_giro account
 db_giro = BankAccountConfig()
 db_giro.name = 'db_giro'
-db_giro.delimiter = ';'
-db_giro.quotechar = '"'
-db_giro.dropped_lines = 5
-db_giro.source_account = 'Assets:Current Assets:Checking Account'
-db_giro.target_account = 'Imbalance-EUR'
+db_giro.delimiter = ';'     #delimiter character to parse the csv
+db_giro.quotechar = '"'     #quotation character to parse the csv
+db_giro.dropped_lines = 5   #number of initial lines in the csv that do not contain transaction data
+db_giro.source_account = 'Assets:Current Assets:Checking Account' #use the same name as in your software (e.g. gnucash)
+db_giro.target_account = 'Imbalance-EUR'    #use the same name as in your software (e.g. gnucash)
 db_giro.parser_functions = DBGiroParserFunctions
 db_giro.replacements = replacements
 

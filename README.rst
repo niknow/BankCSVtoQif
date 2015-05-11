@@ -23,8 +23,7 @@ Installation
     cd BankCSVtoQif
     python setup.py install
 
-* You can start using the example scripts `db_giro.py`, `db_master.py` or `lloyds.py` for a checking account at
- Deutsche Bank, a Deutsche Bank Mastercard or a Lloyds bank checking account.
+* You can start using the example scripts `db_giro.py`, `db_master.py` or `lloyds.py` for a checking account at Deutsche Bank, a Deutsche Bank Mastercard or a Lloyds bank checking account.
 
 
 Example: Deutsche Bank Chechking Account

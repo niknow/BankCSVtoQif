@@ -1,4 +1,7 @@
 myexamples
+bankcsvtoqif.egg-info
+build
+dist
 *.pyc
 *.csv
 *.qif

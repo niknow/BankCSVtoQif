@@ -55,11 +55,20 @@ class Transaction(object):
         return self.credit - self.debit
 
 
-class BankAccountParserFunctions(object):
-    """ Abstract class. For each bank account to be parsed, create a subclass and implement a method
-        that gets as an input a line of csv of this bank account and returns as an output the desired
-        quantity, i.e. date, description, debit, credit.
+class BankAccountConfig(object):
+    """ Abstract class. Stores the configuration data to parse the csv from a specific account.
+        For each bank account type, a subclass is implemented in banks.py. All parse_-methods have to
+        be overriden and implemented in the subclass.
     """
+
+    def __init__(self):
+        self.delimiter = None
+        self.quotechar = None
+        self.dropped_lines = None
+        self.source_account = None
+        self.target_account = None
+        self.parser_functions = None
+        self.replacements = None
 
     @staticmethod
     def normalize_amount(amount):
@@ -71,34 +80,36 @@ class BankAccountParserFunctions(object):
         return float(amount)
 
     @staticmethod
-    def line_to_date(line):
+    def parse_line_to_date(line):
+        """
+        :param line: #of csv
+        :return:  date of transaction as datetime
+        """
         pass
 
     @staticmethod
-    def line_to_description(line):
+    def parse_line_to_description(line):
+        """
+        :param line: #of csv
+        :return: description of transaction as string
+        """
         pass
 
     @staticmethod
-    def line_to_debit(line):
+    def parse_line_to_debit(line):
+        """
+        :param line: #of csv
+        :return: debit of transaction as float
+        """
         pass
 
     @staticmethod
-    def line_to_credit(line):
+    def parse_line_to_credit(line):
+        """
+        :param line: #of csv
+        :return: credit of transaction as float
+        """
         pass
-
-
-class BankAccountConfig(object):
-    """ Stores the configuration data to parse the csv from a specific account. """
-
-    def __init__(self):
-        self.name = ''
-        self.delimiter = ';'
-        self.quotechar = '"'
-        self.dropped_lines = 5
-        self.source_account = 'Assets:Current Assets:Checking Account'
-        self.target_account = 'Imbalance-EUR'
-        self.parser_functions = BankAccountParserFunctions
-        self.replacements = None
 
 
 class DataManager(object):
@@ -119,11 +130,11 @@ class DataManager(object):
         consume(c, self.account_config.dropped_lines)  # ignore first lines
         for line in c:
             try:
-                par_fun = self.account_config.parser_functions
-                transaction = Transaction(par_fun.line_to_date(line),
-                                          par_fun.line_to_description(line),
-                                          par_fun.line_to_debit(line),
-                                          par_fun.line_to_credit(line),
+                par_fun = self.account_config
+                transaction = Transaction(par_fun.parse_line_to_date(line),
+                                          par_fun.parse_line_to_description(line),
+                                          par_fun.parse_line_to_debit(line),
+                                          par_fun.parse_line_to_credit(line),
                                           self.account_config.target_account)
                 self.transactions.append(transaction)
             except IndexError:

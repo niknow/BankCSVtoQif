@@ -22,6 +22,7 @@
 import collections
 from itertools import islice
 import csv
+import json
 import qif
 from smartlabeler import SmartLabeler
 
@@ -68,7 +69,6 @@ class BankAccountConfig(object):
         self.source_account = None
         self.target_account = None
         self.parser_functions = None
-        self.replacements = None
 
     @staticmethod
     def normalize_amount(amount):
@@ -115,9 +115,10 @@ class BankAccountConfig(object):
 class DataManager(object):
     """ Main class to interact with the user. """
 
-    def __init__(self, csv_filename, qif_filename, account_config):
+    def __init__(self, csv_filename, qif_filename, replacements_file, account_config):
         self.csv_filename = csv_filename
         self.qif_filename = qif_filename
+        self.replacements_file = replacements_file
         self.account_config = account_config
         self.transactions = []
 
@@ -143,10 +144,12 @@ class DataManager(object):
         f.close()
 
     def relabel_transactions(self):
-        smart_labeler = SmartLabeler()
-        smart_labeler.replacements = self.account_config.replacements
-        for index, transaction in enumerate(self.transactions):
-            self.transactions[index] = smart_labeler.rewrite_description_and_add_account(transaction)
+        if self.replacements_file:
+            all_replacements = json.load(open(self.replacements_file))
+            smart_labeler = SmartLabeler()
+            smart_labeler.replacements = all_replacements[self.account_config.name]
+            for index, transaction in enumerate(self.transactions):
+                self.transactions[index] = smart_labeler.rewrite_description_and_add_account(transaction)
 
     def write_qif(self):
         q = qif.Qif(self.account_config.source_account)

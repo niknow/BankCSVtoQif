@@ -9,7 +9,7 @@ relabel the description of a transaction if a certain string is matched and book
 account. The rationale behind this is that many transactions occur regularly and thus can be booked automatically.
 
 **Project status:** Experimental.
-
+**Recommended Python version:** Python 3.4.3
 
 Installation
 -------
@@ -38,42 +38,48 @@ is named `transaction_data.csv`. Invoke::
 A file named `transaction_data.qif` will be created in the same directory. You can modify the name of the output
 file if you wish::
 
-    python db_giro.py transaction_data.csv my_fancy_transactions.qif
+    python b2q.py db_giro transaction_data.csv my_fancy_transactions.qif
 
 The *.qif-file is now ready to be imported into your financial sofware, for instance gnucash.
 
 
-Using automatic Replacements (outdated)
+Using automatic Replacements
 -------
-In the `db_giro.py`, you can comment in the following lines::
+During the conversion process you can use the `-r` option to conduct automatic replacements::
 
-    replacements = [
-        Replacement('cryptic number 12345', 'Rent', 'Expenses:Flat:Rent', 1),
-        ]
+    python b2q.py db_giro transaction_data.csv -r
 
-This will have the following effect on the conversion: Whenever a transaction is found whose description contains
-the string 'cryptic number 12345', its description will be replaced by the term 'Rent' and the target account
-'Expenses:Flat:Rent' will be chosen to book that transaction. The numer '1' will append the year and the month
-(see class definition for more details on that flag). You can add as many replacements as you want. If you import
-the resulting qif into gnucash, the transaction will be booked automatically to the configured target account. So
-you don't have to book regular transactions manually every time.
+The replacements are configured in `replacements.ini`. You can also choose another file via::
 
-Creating a new script (outdated)
+    python b2q.py db_giro transaction_data.csv --replacements my_replacement_config.ini
+
+The `replacements.ini` contains a list of replacements to be conducted automatically for each bank account type. For
+instance, the `db_giro` list contains::
+
+    ["cryptic number 123", "Rent", "Expenses:Flat:Rent", 1]
+
+That means that whenever a description of a transaction contains the strinv "cryptic number 123", it will be
+replaced by "Rent" (in case you specify the empty string here, the description will not be modified). The target
+account of that transaction will be set to "Expenses:Flat:Rent". The append flag '1' will append the year and the month
+(0 won't append anything and 2 appends the next month). You can add as many replacements as you want for all of your
+bank account types. If you import the resulting qif into gnucash, the transaction will be booked automatically to the
+specified target account. So you don't have to book regular transactions manually every time.
+
+For developers: Creating new bank account types
 ~~~~~~~
-In case you are a customer of any other bank than the examples above, you can use the `db_giro.py` script as a
-template to create your own script. In the class::
+In case you are a customer of a bank, which is not in the list yet, you can add it as follows: The
+`setup.py install` installs a python module named `bankcsvtoqif`, which contains the `banks.py`. You can copy/paste
+an existing bank account type class and modify it to fit a new bank account type. You have to give the class a
+unique name and it has to be a subclass of `BankAccountConfig`. To parse the csv from a bank successfully, you have
+to adapt the following parameters:
 
-    class DBGiroParserFunctions(BankAccountParserFunctions):
+    self.delimiter = ';'     #delimiter character to parse the csv
+    self.quotechar = '"'     #quotation character to parse the csv
+    self.dropped_lines = 5   #number of initial lines in the csv that do not contain transaction data
 
-you have to adapt the functions to make them parse a line of the csv of from bank. Next, you have to configure::
+Then you have to adapt the `parse_`-functions so that they correctly parse the csv from that bank, see also the
+`BankAccountConfig` class for more documentation on this.
 
-    db_giro.delimiter = ';'     #delimiter character to parse the csv
-    db_giro.quotechar = '"'     #quotation character to parse the csv
-    db_giro.dropped_lines = 5   #number of initial lines in the csv that do not contain transaction data
-    db_giro.source_account = 'Assets:Current Assets:Checking Account'   #use the same name as in your software (e.g. gnucash)
-    db_giro.target_account = 'Imbalance-EUR'    #use the same name as in your software (e.g. gnucash)
-
-That's basically it. Optionally you can configure replacements as described above.
 
 Uninstallation
 -------

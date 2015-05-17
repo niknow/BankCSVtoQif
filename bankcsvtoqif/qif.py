@@ -61,4 +61,3 @@ class Transaction(object):
             '$' + '%.2f' % self.amount,
             '^'
         ]
-

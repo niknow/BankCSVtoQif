@@ -50,5 +50,4 @@ qfile = args.qif_file if args.qif_file else args.csv_file[:-3] + 'qif'
 # run conversion and print result
 data_manager = DataManager(args.csv_file, qfile, args.replacements, account_config)
 data_manager.csv_to_qif()
-for transaction in data_manager.transactions:
-    print transaction
+data_manager.print_transactions()

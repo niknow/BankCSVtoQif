@@ -70,7 +70,6 @@ class SmartLabeler(object):
 
     def load_replacements_from_file(self, replacements_file, account_name):
         all_replacements = json.load(open(replacements_file))
-        print all_replacements[account_name]
         for repdata in all_replacements[account_name]:
             r = Replacement()
             r.load_from_json(repdata)

@@ -22,8 +22,8 @@
 import collections
 from itertools import islice
 import csv
-import qif
-from smartlabeler import SmartLabeler
+from bankcsvtoqif import qif
+from bankcsvtoqif.smartlabeler import SmartLabeler
 
 
 def consume(iterator, n):
@@ -121,8 +121,12 @@ class DataManager(object):
         self.account_config = account_config
         self.transactions = []
 
+    def print_transactions(self):
+        for transaction in self.transactions:
+            print(transaction)
+
     def read_csv(self):
-        f = open(self.csv_filename, 'rb')
+        f = open(self.csv_filename, 'rt')
         csv.register_dialect(self.account_config.name,
                              delimiter=self.account_config.delimiter,
                              quotechar=self.account_config.quotechar)
@@ -138,7 +142,7 @@ class DataManager(object):
                                           self.account_config.target_account)
                 self.transactions.append(transaction)
             except IndexError:
-                print 'skipping: %s' % line
+                print('skipping: %s' % line)
                 continue
         f.close()
 

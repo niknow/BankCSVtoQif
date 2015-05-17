@@ -20,6 +20,7 @@
 
 
 from monthdelta import MonthDelta
+import json
 
 
 class Replacement(object):
@@ -36,6 +37,12 @@ class Replacement(object):
         self.new_description = new_description
         self.account = account
         self.append_date = append_date
+
+    def load_from_json(self, data):
+        self.pattern = data[0]
+        self.new_description = data[1]
+        self.account = data[2]
+        self.append_date = data[3]
 
     def matches(self, search_str):
         return self.pattern in search_str
@@ -61,9 +68,18 @@ class SmartLabeler(object):
     def __init__(self):
         self.replacements = []
 
+    def load_replacements_from_file(self, replacements_file, account_name):
+        all_replacements = json.load(open(replacements_file))
+        print all_replacements[account_name]
+        for repdata in all_replacements[account_name]:
+            r = Replacement()
+            r.load_from_json(repdata)
+            self.replacements.append(r)
+
     def rewrite_description_and_add_account(self, transaction):
         for rep in self.replacements:
             if rep.matches(transaction.description):
-                transaction.description = rep.get_description(transaction.date)
+                if rep.new_description:
+                    transaction.description = rep.get_description(transaction.date)
                 transaction.account = rep.account
         return transaction

@@ -22,7 +22,6 @@
 import collections
 from itertools import islice
 import csv
-import json
 import qif
 from smartlabeler import SmartLabeler
 
@@ -145,9 +144,8 @@ class DataManager(object):
 
     def relabel_transactions(self):
         if self.replacements_file:
-            all_replacements = json.load(open(self.replacements_file))
             smart_labeler = SmartLabeler()
-            smart_labeler.replacements = all_replacements[self.account_config.name]
+            smart_labeler.load_replacements_from_file(self.replacements_file, self.account_config.name)
             for index, transaction in enumerate(self.transactions):
                 self.transactions[index] = smart_labeler.rewrite_description_and_add_account(transaction)
 

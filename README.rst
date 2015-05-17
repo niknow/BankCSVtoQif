@@ -9,6 +9,7 @@ relabel the description of a transaction if a certain string is matched and book
 account. The rationale behind this is that many transactions occur regularly and thus can be booked automatically.
 
 **Project status:** Experimental.
+
 **Recommended Python version:** Python 3.4.3
 
 Installation
@@ -28,7 +29,7 @@ Installation
     python b2q.py -h
 
 
-Example: Deutsche Bank Chechking Account
+Example: Deutsche Bank Checking Account
 -------
 Download the *.csv-file from your online banking interface to the location of the `b2q.py`. We assume this file
 is named `transaction_data.csv`. Invoke::
@@ -58,12 +59,12 @@ instance, the `db_giro` list contains::
 
     ["cryptic number 123", "Rent", "Expenses:Flat:Rent", 1]
 
-That means that whenever a description of a transaction contains the strinv "cryptic number 123", it will be
+That means that whenever a description of a transaction contains the string "cryptic number 123", it will be
 replaced by "Rent" (in case you specify the empty string here, the description will not be modified). The target
 account of that transaction will be set to "Expenses:Flat:Rent". The append flag '1' will append the year and the month
-(0 won't append anything and 2 appends the next month). You can add as many replacements as you want for all of your
+('0' won't append anything and '2' appends the next month). You can add as many replacements as you want for all of your
 bank account types. If you import the resulting qif into gnucash, the transaction will be booked automatically to the
-specified target account. So you don't have to book regular transactions manually every time.
+specified target account. All in all this achieves that you don't have to manually book a regular transaction every time.
 
 For developers: Creating new bank account types
 ~~~~~~~
@@ -71,13 +72,13 @@ In case you are a customer of a bank, which is not in the list yet, you can add 
 `setup.py install` installs a python module named `bankcsvtoqif`, which contains the `banks.py`. You can copy/paste
 an existing bank account type class and modify it to fit a new bank account type. You have to give the class a
 unique name and it has to be a subclass of `BankAccountConfig`. To parse the csv from a bank successfully, you have
-to adapt the following parameters:
+to adapt the following parameters::
 
     self.delimiter = ';'     #delimiter character to parse the csv
     self.quotechar = '"'     #quotation character to parse the csv
     self.dropped_lines = 5   #number of initial lines in the csv that do not contain transaction data
 
-Then you have to adapt the `parse_`-functions so that they correctly parse the csv from that bank, see also the
+Then you have to adapt the `parse_`-functions such that they correctly parse the csv from that bank, see also the
 `BankAccountConfig` class for more documentation on this.
 
 
@@ -87,5 +88,3 @@ To remove BankCSVtoQif uninstall the python library by deleting all its files. Y
 
     python setup.py install --record files.txt
     cat files.txt
-
-Of course you can also all scripts created with that library.

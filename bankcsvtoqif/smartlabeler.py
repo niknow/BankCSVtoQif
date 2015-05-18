@@ -75,10 +75,14 @@ class SmartLabeler(object):
             r.load_from_json(repdata)
             self.replacements.append(r)
 
-    def rewrite_description_and_add_account(self, transaction):
-        for rep in self.replacements:
-            if rep.matches(transaction.description):
-                if rep.new_description:
-                    transaction.description = rep.get_description(transaction.date)
-                transaction.account = rep.account
+    def has_replacement(self, transaction):
+        for replacement in self.replacements:
+            if replacement.matches(transaction.description):
+                return replacement
+
+    def replace(self, transaction, replacement):
+        if replacement.new_description:
+            transaction.description = replacement.get_description(transaction.date)
+        transaction.account = replacement.account
         return transaction
+

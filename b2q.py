@@ -41,6 +41,7 @@ parser.add_argument('source_account', nargs='?', help="source account, e.g. Asse
 parser.add_argument('target_account', nargs='?', help="default target account, e.g. Imbalance-EUR")
 parser.add_argument('-r', '--replacements', nargs='?', const='replacements.ini',
                     help="config file for automatic replacements")
+parser.add_argument('-v', action='store_true', help="produce output during conversion")
 args = parser.parse_args()
 
 
@@ -49,6 +50,9 @@ account_config = banks[args.type]()
 qfile = args.qif_file if args.qif_file else args.csv_file[:-3] + 'qif'
 
 # run conversion and print result
-data_manager = DataManager(args.csv_file, qfile, args.replacements, account_config)
+data_manager = DataManager(args.csv_file,
+                           qfile,
+                           args.replacements,
+                           account_config,
+                           args.v)
 data_manager.csv_to_qif()
-data_manager.print_transactions()

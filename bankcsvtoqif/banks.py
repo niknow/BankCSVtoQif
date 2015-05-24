@@ -23,6 +23,58 @@ from bankcsvtoqif.bankcsv import BankAccountConfig
 from datetime import datetime
 
 
+class BankAccountConfig(object):
+    """ Abstract class. Stores the configuration data to parse the csv from a specific account.
+        For each bank account type, a subclass is implemented in banks.py. All parse_-methods have to
+        be overriden and implemented in the subclass.
+    """
+
+    def __init__(self):
+        self.delimiter = None
+        self.quotechar = None
+        self.dropped_lines = None
+        self.source_account = None
+        self.target_account = None
+        self.parser_functions = None
+
+    def normalize_amount(self, amount):
+        amount = amount.strip('-')
+        amount = amount.replace('.', '')
+        amount = amount.replace(',', '.')
+        if not amount:
+            return 0
+        return float(amount)
+
+    #get_description
+    def parse_line_to_date(self, line):
+        """
+        :param line: #of csv
+        :return:  date of transaction as datetime
+        """
+        pass
+
+    def parse_line_to_description(self, line):
+        """
+        :param line: #of csv
+        :return: description of transaction as string
+        """
+        pass
+
+    def parse_line_to_debit(self, line):
+        """
+        :param line: #of csv
+        :return: debit of transaction as float
+        """
+        pass
+
+    def parse_line_to_credit(self, line):
+        """
+        :param line: #of csv
+        :return: credit of transaction as float
+        """
+        pass
+
+
 class DBGiro(BankAccountConfig):
     """ Deutsche Bank Girokonto """
 
@@ -37,7 +89,6 @@ class DBGiro(BankAccountConfig):
         self.source_account = 'Assets:Current Assets:Checking Account'
         self.target_account = 'Imbalance-EUR'
 
-    @staticmethod
     def parse_line_to_date(line):
         s = line[0].split('.')
         return datetime(int(s[2]), int(s[1]), int(s[0]))

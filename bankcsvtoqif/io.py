@@ -19,13 +19,6 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-import collections
-from itertools import islice
-import csv
-from bankcsvtoqif import qif
-from bankcsvtoqif.smartlabeler import SmartLabeler
-
-
 def consume(iterator, n):
     """Advance the iterator n-steps ahead. If n is none, consume entirely."""
     # Use functions that consume iterators at C speed.
@@ -35,80 +28,6 @@ def consume(iterator, n):
     else:
         # advance to the empty slice starting at position n
         next(islice(iterator, n, n), None)
-
-
-class Transaction(object):
-    """ Represents a transaction obtained from csv-file. """
-
-    def __init__(self, date, description, debit, credit, account):
-        self.date = date
-        self.description = description
-        self.debit = debit
-        self.credit = credit
-        self.account = account
-
-    def __str__(self):
-        return '<Transaction %s, %s, %s, %s, %s>' % (self.date, self.description, self.debit, self.credit, self.account)
-
-    @property
-    def amount(self):
-        return self.credit - self.debit
-
-
-class BankAccountConfig(object):
-    """ Abstract class. Stores the configuration data to parse the csv from a specific account.
-        For each bank account type, a subclass is implemented in banks.py. All parse_-methods have to
-        be overriden and implemented in the subclass.
-    """
-
-    def __init__(self):
-        self.delimiter = None
-        self.quotechar = None
-        self.dropped_lines = None
-        self.source_account = None
-        self.target_account = None
-        self.parser_functions = None
-
-    @staticmethod
-    def normalize_amount(amount):
-        amount = amount.strip('-')
-        amount = amount.replace('.', '')
-        amount = amount.replace(',', '.')
-        if not amount:
-            return 0
-        return float(amount)
-
-    @staticmethod
-    def parse_line_to_date(line):
-        """
-        :param line: #of csv
-        :return:  date of transaction as datetime
-        """
-        pass
-
-    @staticmethod
-    def parse_line_to_description(line):
-        """
-        :param line: #of csv
-        :return: description of transaction as string
-        """
-        pass
-
-    @staticmethod
-    def parse_line_to_debit(line):
-        """
-        :param line: #of csv
-        :return: debit of transaction as float
-        """
-        pass
-
-    @staticmethod
-    def parse_line_to_credit(line):
-        """
-        :param line: #of csv
-        :return: credit of transaction as float
-        """
-        pass
 
 
 class Messenger(object):
@@ -149,11 +68,13 @@ class DataManager(object):
         for line in c:
             try:
                 par_fun = self.account_config
-                transaction = Transaction(par_fun.parse_line_to_date(line),
-                                          par_fun.parse_line_to_description(line),
-                                          par_fun.parse_line_to_debit(line),
-                                          par_fun.parse_line_to_credit(line),
-                                          self.account_config.target_account)
+                transaction = Transaction(
+                    par_fun.parse_line_to_date(line),
+                    par_fun.parse_line_to_description(line),
+                    par_fun.parse_line_to_debit(line),
+                    par_fun.parse_line_to_credit(line),
+                    self.account_config.target_account
+                )
                 self.transactions.append(transaction)
                 self.messenger.send_message("parsed: " + transaction.__str__())
             except IndexError:

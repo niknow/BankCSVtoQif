@@ -32,15 +32,20 @@ for name, obj in inspect.getmembers(bankcsvtoqif.banks):
         banks[obj.name] = obj
 
 # parse arguments
-parser = argparse.ArgumentParser(description="Smart conversion of csv files from bank statements to qif.",
-                                 epilog="Exampe: python b2q.py db_giro statement_june_15.csv")
+parser = argparse.ArgumentParser(
+    description="Smart conversion of csv files from bank statements to qif.",
+    epilog="Exampe: python b2q.py db_giro statement_june_15.csv"
+)
 parser.add_argument('type', choices=banks.keys(), help="account type from which you want to convert")
 parser.add_argument('csv_file', help="csv file you want to convert")
 parser.add_argument('qif_file', nargs='?', default='', help="name of qif file output")
 parser.add_argument('source_account', nargs='?', help="source account, e.g. Assets:Current Assets:Checking Account")
 parser.add_argument('target_account', nargs='?', help="default target account, e.g. Imbalance-EUR")
-parser.add_argument('-r', '--replacements', nargs='?', const='replacements.ini',
-                    help="config file for automatic replacements")
+parser.add_argument(
+    '-r', '--replacements',
+    nargs='?',
+    const='replacements.ini',
+    help="config file for automatic replacements")
 parser.add_argument('-v', action='store_true', help="produce output during conversion")
 args = parser.parse_args()
 
@@ -50,9 +55,11 @@ account_config = banks[args.type]()
 qfile = args.qif_file if args.qif_file else args.csv_file[:-3] + 'qif'
 
 # run conversion and print result
-data_manager = DataManager(args.csv_file,
-                           qfile,
-                           args.replacements,
-                           account_config,
-                           args.v)
+data_manager = DataManager(
+    args.csv_file,
+    qfile,
+    args.replacements,
+    account_config,
+    args.v
+)
 data_manager.csv_to_qif()

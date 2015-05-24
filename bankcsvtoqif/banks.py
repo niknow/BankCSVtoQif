@@ -102,10 +102,10 @@ class DBGiro(BankAccountConfig):
         return ' '.join(description.split())
 
     def get_debit(self, line):
-        return BankAccountConfig.normalize_amount(line[13])
+        return self.normalize_amount(line[13])
 
     def get_credit(self, line):
-        return BankAccountConfig.normalize_amount(line[14])
+        return self.normalize_amount(line[14])
 
 
 class DBMaster(BankAccountConfig):
@@ -129,7 +129,7 @@ class DBMaster(BankAccountConfig):
         return line[2]
 
     def get_debit(self, line):
-        return BankAccountConfig.normalize_amount(line[6])
+        return self.normalize_amount(line[6])
 
     def get_credit(self, line):
         return 0

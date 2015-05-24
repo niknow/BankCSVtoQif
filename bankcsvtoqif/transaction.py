@@ -44,4 +44,10 @@ class TransactionFactory(object):
         self.account_config = account_config
 
     def create_from_line(self, line):
-        pass
+        return Transaction(
+            self.account_config.get_date(line),
+            self.account_config.get_description(line),
+            self.account_config.get_debit(line),
+            self.account_config.get_credit(line),
+            self.account_config.default_target_account
+        )

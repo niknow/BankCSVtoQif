@@ -2,6 +2,7 @@ myexamples
 bankcsvtoqif.egg-info
 build
 dist
+reps.ini
 *.pyc
 *.csv
 *.qif

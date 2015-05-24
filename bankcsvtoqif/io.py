@@ -19,6 +19,14 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
+import collections
+import csv
+from itertools import islice
+from bankcsvtoqif import qif
+from bankcsvtoqif.smartlabeler import SmartLabeler
+from bankcsvtoqif.transaction import TransactionFactory
+
+
 def consume(iterator, n):
     """Advance the iterator n-steps ahead. If n is none, consume entirely."""
     # Use functions that consume iterators at C speed.
@@ -35,11 +43,6 @@ class Messenger(object):
 
     def __init__(self, on):
         self.on = on
-
-    @staticmethod
-    def newlines(num):
-        if num:
-            print("\n" * (num - 1))
 
     def send_message(self, msg):
         if self.on:
@@ -60,21 +63,18 @@ class DataManager(object):
     def read_csv(self):
         self.messenger.send_message("\nParsing csv-file from" + self.csv_filename + "...")
         f = open(self.csv_filename, 'rt')
-        csv.register_dialect(self.account_config.name,
-                             delimiter=self.account_config.delimiter,
-                             quotechar=self.account_config.quotechar)
+        csv.register_dialect(
+            self.account_config.name,
+            delimiter=self.account_config.delimiter,
+            quotechar=self.account_config.quotechar
+        )
         c = csv.reader(f, self.account_config.name)
         consume(c, self.account_config.dropped_lines)  # ignore first lines
+        transaction_factory = TransactionFactory(self.account_config)
         for line in c:
             try:
                 par_fun = self.account_config
-                transaction = Transaction(
-                    par_fun.get_date(line),
-                    par_fun.parse_line_to_description(line),
-                    par_fun.parse_line_to_debit(line),
-                    par_fun.parse_line_to_credit(line),
-                    self.account_config.target_account
-                )
+                transaction = transaction_factory.create_from_line(line)
                 self.transactions.append(transaction)
                 self.messenger.send_message("parsed: " + transaction.__str__())
             except IndexError:
@@ -83,8 +83,8 @@ class DataManager(object):
         f.close()
 
     def relabel_transactions(self):
-        self.messenger.send_message("\nConducting automatic replacements using " + self.replacements_file + "...")
         if self.replacements_file:
+            self.messenger.send_message("\nConducting automatic replacements using " + self.replacements_file + "...")
             smart_labeler = SmartLabeler()
             smart_labeler.load_replacements_from_file(self.replacements_file, self.account_config.name)
             for index, transaction in enumerate(self.transactions):
@@ -95,7 +95,7 @@ class DataManager(object):
 
     def write_qif(self):
         self.messenger.send_message("\nWriting qif-file to " + self.qif_filename + "...")
-        q = qif.Qif(self.account_config.source_account)
+        q = qif.Qif(self.account_config.default_source_account)
         for transaction in self.transactions:
             q.add_transaction(
                 qif.Transaction(transaction.date, transaction.account, transaction.description, transaction.amount))

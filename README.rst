@@ -78,7 +78,7 @@ to adapt the following parameters::
     self.quotechar = '"'     #quotation character to parse the csv
     self.dropped_lines = 5   #number of initial lines in the csv that do not contain transaction data
 
-Then you have to adapt the `parse_`-functions such that they correctly parse the csv from that bank, see also the
+Then you have to implement the abstractmethods such that they correctly parse the csv from that bank, see also the
 `BankAccountConfig` class for more documentation on this.
 
 
@@ -88,3 +88,4 @@ To remove BankCSVtoQif uninstall the python library by deleting all its files. Y
 
     python setup.py install --record files.txt
     cat files.txt
+

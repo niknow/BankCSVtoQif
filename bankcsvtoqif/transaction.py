@@ -38,6 +38,7 @@ class Transaction(object):
 
 
 class TransactionFactory(object):
+    """ Creates Transactions from an account_config. """
 
     def __init__(self, account_config):
         self.account_config = account_config

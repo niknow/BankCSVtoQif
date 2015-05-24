@@ -69,7 +69,7 @@ class DataManager(object):
             try:
                 par_fun = self.account_config
                 transaction = Transaction(
-                    par_fun.parse_line_to_date(line),
+                    par_fun.get_date(line),
                     par_fun.parse_line_to_description(line),
                     par_fun.parse_line_to_debit(line),
                     par_fun.parse_line_to_credit(line),

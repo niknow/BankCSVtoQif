@@ -19,23 +19,24 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-from bankcsvtoqif.bankcsv import BankAccountConfig
 from datetime import datetime
+from abc import ABCMeta, abstractmethod
 
 
 class BankAccountConfig(object):
     """ Abstract class. Stores the configuration data to parse the csv from a specific account.
-        For each bank account type, a subclass is implemented in banks.py. All parse_-methods have to
+        For each bank account type, a subclass is implemented. @abstractmethods have to
         be overriden and implemented in the subclass.
     """
+
+    __metaclass__ = ABCMeta
 
     def __init__(self):
         self.delimiter = None
         self.quotechar = None
         self.dropped_lines = None
-        self.source_account = None
-        self.target_account = None
-        self.parser_functions = None
+        self.default_source_account = None
+        self.default_target_account = None
 
     def normalize_amount(self, amount):
         amount = amount.strip('-')
@@ -45,29 +46,32 @@ class BankAccountConfig(object):
             return 0
         return float(amount)
 
-    #get_description
-    def parse_line_to_date(self, line):
+    @abstractmethod
+    def get_date(self, line):
         """
         :param line: #of csv
         :return:  date of transaction as datetime
         """
         pass
 
-    def parse_line_to_description(self, line):
+    @abstractmethod
+    def get_description(self, line):
         """
         :param line: #of csv
         :return: description of transaction as string
         """
         pass
 
-    def parse_line_to_debit(self, line):
+    @abstractmethod
+    def get_debit(self, line):
         """
         :param line: #of csv
         :return: debit of transaction as float
         """
         pass
 
-    def parse_line_to_credit(self, line):
+    @abstractmethod
+    def get_credit(self, line):
         """
         :param line: #of csv
         :return: credit of transaction as float
@@ -86,24 +90,21 @@ class DBGiro(BankAccountConfig):
         self.delimiter = ';'
         self.quotechar = '"'
         self.dropped_lines = 5
-        self.source_account = 'Assets:Current Assets:Checking Account'
-        self.target_account = 'Imbalance-EUR'
+        self.default_source_account = 'Assets:Current Assets:Checking Account'
+        self.default_target_account = 'Imbalance-EUR'
 
-    def parse_line_to_date(line):
+    def get_date(self, line):
         s = line[0].split('.')
         return datetime(int(s[2]), int(s[1]), int(s[0]))
 
-    @staticmethod
-    def parse_line_to_description(line):
+    def get_description(self, line):
         description = line[2] + ' ' + line[3] + ' ' + line[4]
         return ' '.join(description.split())
 
-    @staticmethod
-    def parse_line_to_debit(line):
+    def get_debit(self, line):
         return BankAccountConfig.normalize_amount(line[13])
 
-    @staticmethod
-    def parse_line_to_credit(line):
+    def get_credit(self, line):
         return BankAccountConfig.normalize_amount(line[14])
 
 
@@ -117,24 +118,20 @@ class DBMaster(BankAccountConfig):
         self.delimiter = ';'
         self.quotechar = '"'
         self.dropped_lines = 5
-        self.source_account = 'Liabilities:Deutsche Bank Master Card'
-        self.target_account = 'Imbalance-EUR'
+        self.default_source_account = 'Liabilities:Deutsche Bank Master Card'
+        self.default_target_account = 'Imbalance-EUR'
 
-    @staticmethod
-    def parse_line_to_date(line):
+    def get_date(self, line):
         s = line[0].split('.')
         return datetime(int(s[2]), int(s[1]), int(s[0]))
 
-    @staticmethod
-    def parse_line_to_description(line):
+    def get_description(self, line):
         return line[2]
 
-    @staticmethod
-    def parse_line_to_debit(line):
+    def get_debit(self, line):
         return BankAccountConfig.normalize_amount(line[6])
 
-    @staticmethod
-    def parse_line_to_credit(line):
+    def get_credit(self, line):
         return 0
 
 
@@ -148,22 +145,18 @@ class Lloyds(BankAccountConfig):
         self.delimiter = ','
         self.quotechar = '"'
         self.dropped_lines = 1
-        self.source_account = 'Assets:Current Assets:Checking Account'
-        self.target_account = 'Imbalance-GBP'
+        self.default_source_account = 'Assets:Current Assets:Checking Account'
+        self.default_target_account = 'Imbalance-GBP'
 
-    @staticmethod
-    def parse_line_to_date(line):
+    def get_date(self, line):
         s = line[0].split('/')
         return datetime(int(s[2]), int(s[1]), int(s[0]))
 
-    @staticmethod
-    def parse_line_to_description(line):
+    def get_description(self, line):
         return line[4]
 
-    @staticmethod
-    def parse_line_to_debit(line):
+    def get_debit(self, line):
         return float(line[5]) if line[5] else 0
 
-    @staticmethod
-    def parse_line_to_credit(line):
+    def get_credit(self, line):
         return float(line[6]) if line[6] else 0

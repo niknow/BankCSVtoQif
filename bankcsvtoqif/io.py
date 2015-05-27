@@ -22,9 +22,9 @@
 import collections
 import csv
 from itertools import islice
-from bankcsvtoqif import qif
-from bankcsvtoqif.smartlabeler import SmartLabeler
-from bankcsvtoqif.transaction import TransactionFactory
+import qif
+from smartlabeler import SmartLabeler
+from transaction import TransactionFactory
 
 
 def consume(iterator, n):
@@ -73,7 +73,6 @@ class DataManager(object):
         transaction_factory = TransactionFactory(self.account_config)
         for line in c:
             try:
-                par_fun = self.account_config
                 transaction = transaction_factory.create_from_line(line)
                 self.transactions.append(transaction)
                 self.messenger.send_message("parsed: " + transaction.__str__())

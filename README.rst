@@ -81,6 +81,11 @@ to adapt the following parameters::
 Then you have to implement the abstractmethods such that they correctly parse the csv from that bank, see also the
 `BankAccountConfig` class for more documentation on this.
 
+It is a good idea to write tests, to install the dependencies used for testing and execute the test, just do
+
+    python setup.py test
+    python -m unittest test.test_banks
+
 
 Uninstallation
 -------

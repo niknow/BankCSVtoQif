@@ -168,7 +168,8 @@ class VRBank(BankAccountConfig):
     name = 'vrbank'
 
     def get_date(self, line):
-        pass
+        (day, month, year) = map(int, line[1].split('.'))
+        return datetime(year, month, day)
 
     def get_description(self, line):
         pass

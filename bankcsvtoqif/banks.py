@@ -160,3 +160,21 @@ class Lloyds(BankAccountConfig):
 
     def get_credit(self, line):
         return float(line[6]) if line[6] else 0
+
+
+class VRBank(BankAccountConfig):
+    """ VR-Bank Girokonto """
+
+    name = 'vrbank'
+
+    def get_date(self, line):
+        pass
+
+    def get_description(self, line):
+        pass
+
+    def get_debit(self, line):
+        pass
+
+    def get_credit(self, line):
+        pass

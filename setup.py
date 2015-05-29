@@ -32,6 +32,7 @@ setup(
     license='GNU GPLv2',
     url='https://github.com/niknow/BankCSVtoQif/tree/master/bankcsvtoqif',
     packages=find_packages(),
+    test_suite='bankcsvtoqif.tests',
     tests_require=['pytest'],
     install_requires=['monthdelta']
 )

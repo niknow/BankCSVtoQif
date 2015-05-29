@@ -18,7 +18,11 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from monthdelta import MonthDelta
+try:
+    from monthdelta import MonthDelta as monthdelta
+except ImportError:
+    from monthdelta import monthdelta
+
 import json
 
 
@@ -57,7 +61,7 @@ class Replacement(object):
             return self.new_description
 
         if self.should_append_next_month_date():
-            date += MonthDelta(1)
+            date += monthdelta(1)
         return self.new_description + ' ' + date.strftime('%Y-%m')
 
 

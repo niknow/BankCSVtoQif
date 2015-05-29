@@ -84,7 +84,6 @@ Then you have to implement the abstractmethods such that they correctly parse th
 It is a good idea to write tests, to install the dependencies used for testing and execute the test, just do
 
     python setup.py test
-    python -m unittest test.test_banks
 
 
 Uninstallation

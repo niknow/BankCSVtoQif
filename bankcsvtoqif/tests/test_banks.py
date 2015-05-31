@@ -87,13 +87,15 @@ class TestVRBank(unittest.TestCase):
         self.assertIsNotNone(transaction.date)
         self.assertEqual('2015-05-22T00:00:00', transaction.date.isoformat())
 
-        self.assertLess(transaction.credit, 0)
-        self.assertLess(transaction.credit, -8.2)
-        self.assertGreater(transaction.credit, -9)
-        self.assertEqual(transaction.debit, 0)
+        self.assertGreater(transaction.debit, 0)
+        self.assertGreater(transaction.debit, 8.2)
+        self.assertLess(transaction.debit, 9)
+        self.assertEqual(transaction.credit, 0)
 
+        print transaction.description
         self.assertTrue('AMAZON' in transaction.description)
         self.assertTrue('32132131321' in transaction.description)
+        self.assertTrue('-8,21' not in transaction.description)
 
     def get_fixture_line(self):
         return [

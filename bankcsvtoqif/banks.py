@@ -172,10 +172,15 @@ class VRBank(BankAccountConfig):
         return datetime(year, month, day)
 
     def get_description(self, line):
-        pass
+        return ' '.join(line[3:19])
 
     def get_debit(self, line):
-        pass
+        val = self.parse_float(line[19])
+        return -val if val < 0 else 0
 
     def get_credit(self, line):
-        pass
+        val = self.parse_float(line[19])
+        return val if val >= 0 else 0
+
+    def parse_float(self, amount):
+        return float(amount.replace(',', '.'))

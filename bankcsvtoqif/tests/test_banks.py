@@ -23,8 +23,8 @@
 import csv
 import unittest
 
-from ..banks import DBGiro, VRBank
-from ..transaction import Transaction, TransactionFactory
+from ..banks import DBGiro, DBMaster, VRBank
+from ..transaction import TransactionFactory
 from datetime import datetime
 
 
@@ -59,7 +59,26 @@ class TestDBGiro(unittest.TestCase):
         self.assertEqual(account_config.get_credit(line), credit)
 
 
+class TestDBMaster(unittest.TestCase):
+
+    def setUp(self):
+        self.csv = """03.04.2015;07.04.2015;Amazon *Mktplce EU-UK AMAZON.CO.UK;;;;- 22,84;EUR"""
+
+    def test_db_master(self):
+        account_config = DBMaster()
+        line = csvline_to_line(self.csv, account_config)
+        date = datetime(2015, 4, 3)
+        description = 'Amazon *Mktplce EU-UK AMAZON.CO.UK'
+        debit = 22.84
+        credit = 0
+        self.assertEqual(account_config.get_date(line), date)
+        self.assertEqual(account_config.get_description(line), description)
+        self.assertEqual(account_config.get_debit(line), debit)
+        self.assertEqual(account_config.get_credit(line), credit)
+
+
 class TestVRBank(unittest.TestCase):
+
     def setUp(self):
         self.d = VRBank()
 

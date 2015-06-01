@@ -28,7 +28,7 @@ from ..transaction import Transaction, TransactionFactory
 from datetime import datetime
 
 
-def csvline_to_line(self, csvline, account_config):
+def csvline_to_line(csvline, account_config):
     csvline = csvline.splitlines()
     csv.register_dialect(
         account_config.name,
@@ -42,13 +42,13 @@ def csvline_to_line(self, csvline, account_config):
 class TestDBGiro(unittest.TestCase):
 
     def setUp(self):
-        self.db_giro_csv = """22.04.2015;22.04.2015;"SEPA-Überweisung an";\
+        self.csv = """22.04.2015;22.04.2015;"SEPA-Überweisung an";\
         Smith, John;Rent;DE12345678909876543212;\
         BYLADEM1GLA;;;;;;;-10,00;;EUR"""
 
     def test_db_giro(self):
         account_config = DBGiro()
-        line = csvline_to_line(self.db_giro_csv, account_config)
+        line = csvline_to_line(self.csv, account_config)
         date = datetime(2015, 4, 22)
         description = 'SEPA-Überweisung an Smith, John Rent'
         debit = 10

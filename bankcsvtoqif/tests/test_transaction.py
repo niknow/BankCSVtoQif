@@ -20,7 +20,8 @@
 
 
 import unittest
-import datetime
+from datetime import datetime
+from .test_banks import csvline_to_line
 from ..transaction import Transaction, TransactionFactory
 from ..banks import DBGiro
 
@@ -48,7 +49,7 @@ class TestTransaction(unittest.TestCase):
 
     def test_transaction_factory(self):
         account_config = DBGiro()
-        line = self.csvline_to_line(self.csv_line, account_config)
+        line = csvline_to_line(self.csv_line, account_config)
         transaction_factory = TransactionFactory(account_config)
         transaction = transaction_factory.create_from_line(line)
         self.assertEqual(transaction.date, account_config.get_date(line))

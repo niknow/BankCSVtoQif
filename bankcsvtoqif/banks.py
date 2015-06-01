@@ -38,8 +38,17 @@ class BankAccountConfig(object):
         self.default_source_account = None
         self.default_target_account = None
 
-    def normalize_amount(self, amount):
+    def get_absolute_amount(self, amount):
         amount = amount.strip('-')
+        amount = amount.strip(' ')
+        amount = amount.replace('.', '')
+        amount = amount.replace(',', '.')
+        if not amount:
+            return 0
+        return float(amount)
+
+    def get_amount(self, amount):
+        amount = amount.replace(' ', '')
         amount = amount.replace('.', '')
         amount = amount.replace(',', '.')
         if not amount:
@@ -66,7 +75,7 @@ class BankAccountConfig(object):
     def get_debit(self, line):
         """
         :param line: #of csv
-        :return: debit of transaction as float
+        :return: debit of transaction as a non-negative float
         """
         pass
 
@@ -74,7 +83,7 @@ class BankAccountConfig(object):
     def get_credit(self, line):
         """
         :param line: #of csv
-        :return: credit of transaction as float
+        :return: credit of transaction as non-negative float
         """
         pass
 
@@ -102,10 +111,10 @@ class DBGiro(BankAccountConfig):
         return ' '.join(description.split())
 
     def get_debit(self, line):
-        return self.normalize_amount(line[13])
+        return self.get_absolute_amount(line[13])
 
     def get_credit(self, line):
-        return self.normalize_amount(line[14])
+        return self.get_absolute_amount(line[14])
 
 
 class DBMaster(BankAccountConfig):
@@ -129,10 +138,12 @@ class DBMaster(BankAccountConfig):
         return line[2]
 
     def get_debit(self, line):
-        return self.normalize_amount(line[6])
+        amount = self.get_amount(line[6])
+        return -amount if amount <= 0 else 0
 
     def get_credit(self, line):
-        return 0
+        amount = self.get_amount(line[6])
+        return amount if amount >= 0 else 0
 
 
 class Lloyds(BankAccountConfig):
@@ -175,12 +186,9 @@ class VRBank(BankAccountConfig):
         return ' '.join(line[3:19])
 
     def get_debit(self, line):
-        val = self.parse_float(line[19])
+        val = self.get_amount(line[19])
         return -val if val < 0 else 0
 
     def get_credit(self, line):
-        val = self.parse_float(line[19])
+        val = self.get_amount(line[19])
         return val if val >= 0 else 0
-
-    def parse_float(self, amount):
-        return float(amount.replace(',', '.'))

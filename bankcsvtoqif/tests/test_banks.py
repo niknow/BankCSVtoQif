@@ -92,7 +92,6 @@ class TestVRBank(unittest.TestCase):
         self.assertLess(transaction.debit, 9)
         self.assertEqual(transaction.credit, 0)
 
-        print transaction.description
         self.assertTrue('AMAZON' in transaction.description)
         self.assertTrue('32132131321' in transaction.description)
         self.assertTrue('-8,21' not in transaction.description)

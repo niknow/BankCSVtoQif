@@ -26,7 +26,7 @@ from ..transaction import Transaction
 from ..smartlabeler import SmartLabeler
 
 
-class ReplacementTest(unittest.TestCase):
+class TestReplacement(unittest.TestCase):
 
     def setUp(self):
         self.replacement0 = Replacement('Rent', 'Rent', 'Expenses:Rent', 0)
@@ -53,7 +53,7 @@ class ReplacementTest(unittest.TestCase):
         self.assertEqual(self.replacement2.get_description(date), 'Rent 2015-06')
 
 
-class SmartLabelerTest(unittest.TestCase):
+class TestSmartLabeler(unittest.TestCase):
 
     def setUp(self):
         self.transaction = Transaction(datetime(2015, 5, 1), 'RentXYZ234 3848267', 500, 0, 'Imbalance-EUR')

@@ -42,8 +42,9 @@ parser = argparse.ArgumentParser(
 parser.add_argument('type', choices=bank_dict.keys(), help="account type from which you want to convert")
 parser.add_argument('csv_file', help="csv file you want to convert")
 parser.add_argument('qif_file', nargs='?', default='', help="name of qif file output")
-parser.add_argument('source_account', nargs='?', help="source account, e.g. Assets:Current Assets:Checking Account")
-parser.add_argument('target_account', nargs='?', help="default target account, e.g. Imbalance-EUR")
+parser.add_argument('-s', '--source_account', nargs='?', const='Assets:Current Assets:Checking Account',
+                    help="default source account")
+parser.add_argument('-t', '--target_account', nargs='?', const='Imbalance-EUR', help="default target account")
 parser.add_argument('-r', '--replacements', nargs='?', const='replacements.ini',
                     help="config file for automatic replacements")
 parser.add_argument('-v', action='store_true', help="produce output during conversion")
@@ -51,6 +52,10 @@ args = parser.parse_args()
 
 # configure account according to arguments
 account_config = bank_dict[args.type]()
+if args.source_account:
+    account_config.default_source_account = args.source_account
+if args.target_account:
+    account_config.default_target_account = args.target_account
 qfile = args.qif_file if args.qif_file else args.csv_file[:-3] + 'qif'
 
 # run conversion and print result

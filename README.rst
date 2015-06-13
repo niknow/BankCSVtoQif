@@ -1,5 +1,7 @@
 BankCSVtoQif
 =======
+.. image:: https://travis-ci.org/niknow/BankCSVtoQif.svg?branch=master
+    :target: https://travis-ci.org/niknow/BankCSVtoQif
 
 BankCSVtoQif consists of a Python library and a command line interface that allows to convert a *.csv-file
 of transactions downloaded from a certain bank account generate a *.qif-file as an output. The *.qif-file can then be

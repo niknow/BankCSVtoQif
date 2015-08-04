@@ -22,9 +22,10 @@
 import collections
 import csv
 from itertools import islice
-from . import qif
-from .smartlabeler import SmartLabeler
-from .transaction import TransactionFactory
+
+import bankcsvtoqif.qif as qif
+from bankcsvtoqif.smartlabeler import SmartLabeler
+from bankcsvtoqif.transaction import TransactionFactory
 
 
 def consume(iterator, n):

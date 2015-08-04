@@ -21,9 +21,10 @@
 
 import unittest
 from datetime import datetime
-from ..smartlabeler import Replacement
-from ..transaction import Transaction
-from ..smartlabeler import SmartLabeler
+
+from bankcsvtoqif.smartlabeler import Replacement
+from bankcsvtoqif.transaction import Transaction
+from bankcsvtoqif.smartlabeler import SmartLabeler
 
 
 class TestReplacement(unittest.TestCase):

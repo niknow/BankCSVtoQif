@@ -22,10 +22,12 @@
 
 import csv
 import unittest
-
-from ..banks import DBGiro, DBMaster, VRBank
-from ..transaction import TransactionFactory
 from datetime import datetime
+
+from bankcsvtoqif.banks import DBGiro, DBMaster, VRBank
+from bankcsvtoqif.transaction import TransactionFactory
+
+
 
 
 def csvline_to_line(csvline, account_config):

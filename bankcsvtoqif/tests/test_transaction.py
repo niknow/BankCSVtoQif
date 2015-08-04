@@ -21,9 +21,10 @@
 
 import unittest
 from datetime import datetime
-from .test_banks import csvline_to_line
-from ..transaction import Transaction, TransactionFactory
-from ..banks import DBGiro
+
+from bankcsvtoqif.tests.test_banks import csvline_to_line
+from bankcsvtoqif.transaction import Transaction, TransactionFactory
+from bankcsvtoqif.banks import DBGiro
 
 
 class TestTransaction(unittest.TestCase):

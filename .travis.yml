@@ -5,6 +5,6 @@ python:
 install:
   - pip install coveralls
 script:
-  coverage run --source=bankcsvtoqif -m unittest bankcsvtoqif/tests/test_banks.py bankcsvtoqif/tests/test_smartlabeler.py bankcsvtoqif/tests/test_transaction.py
+  coverage run --source=bankcsvtoqif setup.py test
 after_success:
   coveralls

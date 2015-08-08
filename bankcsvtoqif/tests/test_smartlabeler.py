@@ -21,9 +21,13 @@
 
 import unittest
 from datetime import datetime
-import tempfile
-import os
 import json
+
+
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 from bankcsvtoqif.smartlabeler import Replacement
 from bankcsvtoqif.transaction import Transaction
@@ -84,10 +88,9 @@ class TestSmartLabeler(unittest.TestCase):
         self.assertEqual(replaced_transaction.account, self.replacement2.account)
 
     def test_load_replacements_from_file(self):
-        self.replacements_file = tempfile.mkstemp(dir='.')
-        f = os.fdopen(self.replacements_file[0], 'w')
-        json.dump(replacements, f)
-        f.close()
-        self.SmartLabeler.load_replacements_from_file(self.replacements_file[1], 'db_giro')
+        self.replacements_file = StringIO()
+        json.dump(replacements, self.replacements_file)
+        self.replacements_file.seek(0,0)
+        self.SmartLabeler.load_replacements_from_file(self.replacements_file, 'db_giro')
         self.assertEqual(len(self.SmartLabeler.replacements), 2)
-        os.remove(self.replacements_file[1])
+        self.replacements_file.close()

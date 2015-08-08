@@ -21,14 +21,23 @@
 
 import unittest
 from datetime import datetime
+import tempfile
+import os
+import json
 
 from bankcsvtoqif.smartlabeler import Replacement
 from bankcsvtoqif.transaction import Transaction
 from bankcsvtoqif.smartlabeler import SmartLabeler
 
+replacements = {
+    "db_giro": [
+        ["no123", "rent", "Expenses:Rent", 1],
+        ["xyz", "ice cream", "Expenses:Sweeties", 0],
+    ]
+}
+
 
 class TestReplacement(unittest.TestCase):
-
     def setUp(self):
         self.replacement0 = Replacement('Rent', 'Rent', 'Expenses:Rent', 0)
         self.replacement1 = Replacement('Rent', 'Rent', 'Expenses:Rent', 1)
@@ -55,7 +64,6 @@ class TestReplacement(unittest.TestCase):
 
 
 class TestSmartLabeler(unittest.TestCase):
-
     def setUp(self):
         self.transaction = Transaction(datetime(2015, 5, 1), 'RentXYZ234 3848267', 500, 0, 'Imbalance-EUR')
         self.replacement1 = Replacement('Rent', 'Rent', 'Expenses:Rent', 0)
@@ -74,3 +82,12 @@ class TestSmartLabeler(unittest.TestCase):
         replaced_transaction = self.SmartLabeler.replace(self.transaction, self.replacement2)
         self.assertEqual(replaced_transaction.description, self.transaction.description)
         self.assertEqual(replaced_transaction.account, self.replacement2.account)
+
+    def test_load_replacements_from_file(self):
+        self.replacements_file = tempfile.mkstemp(dir='.')
+        f = os.fdopen(self.replacements_file[0], 'w')
+        json.dump(replacements, f)
+        f.close()
+        self.SmartLabeler.load_replacements_from_file(self.replacements_file[1], 'db_giro')
+        self.assertEqual(len(self.SmartLabeler.replacements), 2)
+        os.remove(self.replacements_file[1])

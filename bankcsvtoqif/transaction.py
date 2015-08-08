@@ -18,6 +18,20 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import collections
+import csv
+from itertools import islice
+
+
+def consume(iterator, n):
+    """Advance the iterator n-steps ahead. If n is none, consume entirely."""
+    # Use functions that consume iterators at C speed.
+    if n is None:
+        # feed the entire iterator into a zero-length deque
+        collections.deque(iterator, maxlen=0)
+    else:
+        # advance to the empty slice starting at position n
+        next(islice(iterator, n, n), None)
 
 class Transaction(object):
     """ Represents a transaction obtained from csv-file. """
@@ -51,3 +65,21 @@ class TransactionFactory(object):
             self.account_config.get_credit(line),
             self.account_config.default_target_account
         )
+
+    def read_from_file(self, f, messenger):
+        csv.register_dialect(
+            self.account_config.name,
+            delimiter=self.account_config.delimiter,
+            quotechar=self.account_config.quotechar
+        )
+        c = csv.reader(f, self.account_config.name)
+        consume(c, self.account_config.dropped_lines)  # ignore first lines
+        transactions = []
+        for line in c:
+            try:
+                transaction = self.create_from_line(line)
+                transactions.append(transaction)
+                messenger.send_message("parsed: " + transaction.__str__())
+            except IndexError:
+                messenger.send_message('skipped: %s' % line)
+                continue

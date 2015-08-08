@@ -29,7 +29,7 @@ class Qif(object):
     def add_transaction(self, transaction):
         self.transactions.append(transaction)
 
-    def save(self, filename):
+    def get_raw_data(self):
         lines = [
             '!Account',
             'N' + self.account,
@@ -37,10 +37,7 @@ class Qif(object):
         ]
         for t in self.transactions:
             lines += t.get_lines()
-
-        fp = open(filename, 'w')
-        fp.write('\n'.join(lines))
-        fp.close()
+        return lines
 
 
 class Transaction(object):

@@ -19,24 +19,9 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-import collections
-import csv
-from itertools import islice
-
 import bankcsvtoqif.qif as qif
 from bankcsvtoqif.smartlabeler import SmartLabeler
 from bankcsvtoqif.transaction import TransactionFactory
-
-
-def consume(iterator, n):
-    """Advance the iterator n-steps ahead. If n is none, consume entirely."""
-    # Use functions that consume iterators at C speed.
-    if n is None:
-        # feed the entire iterator into a zero-length deque
-        collections.deque(iterator, maxlen=0)
-    else:
-        # advance to the empty slice starting at position n
-        next(islice(iterator, n, n), None)
 
 
 class Messenger(object):
@@ -61,45 +46,24 @@ class DataManager(object):
         self.messenger = Messenger(verbose)
         self.transactions = []
 
-    def read_csv(self):
+    def read_csv(self, f):
         self.messenger.send_message("\nParsing csv-file from" + self.csv_filename + "...")
-        f = open(self.csv_filename, 'rt')
-        csv.register_dialect(
-            self.account_config.name,
-            delimiter=self.account_config.delimiter,
-            quotechar=self.account_config.quotechar
-        )
-        c = csv.reader(f, self.account_config.name)
-        consume(c, self.account_config.dropped_lines)  # ignore first lines
         transaction_factory = TransactionFactory(self.account_config)
-        for line in c:
-            try:
-                transaction = transaction_factory.create_from_line(line)
-                self.transactions.append(transaction)
-                self.messenger.send_message("parsed: " + transaction.__str__())
-            except IndexError:
-                self.messenger.send_message('skipped: %s' % line)
-                continue
-        f.close()
+        self.transactions = transaction_factory.read_from_file(f, self.messenger)
 
-    def relabel_transactions(self):
-        if self.replacements_file:
-            self.messenger.send_message("\nConducting automatic replacements using " + self.replacements_file + "...")
-            smart_labeler = SmartLabeler()
-            smart_labeler.load_replacements_from_file(self.replacements_file, self.account_config.name)
-            for index, transaction in enumerate(self.transactions):
-                replacement = smart_labeler.has_replacement(transaction)
-                if replacement:
-                    self.transactions[index] = smart_labeler.replace(transaction, replacement)
-                    self.messenger.send_message("replaced: " + self.transactions[index].__str__())
+    def relabel_transactions(self, f):
+        self.messenger.send_message("\nConducting automatic replacements using " + self.replacements_file + "...")
+        smart_labeler = SmartLabeler()
+        smart_labeler.load_replacements_from_file(f, self.account_config.name)
+        smart_labeler.run_replacements(self.transactions, self.messenger)
 
-    def write_qif(self):
+    def write_qif(self, f):
         self.messenger.send_message("\nWriting qif-file to " + self.qif_filename + "...")
         q = qif.Qif(self.account_config.default_source_account)
         for transaction in self.transactions:
             q.add_transaction(
                 qif.Transaction(transaction.date, transaction.account, transaction.description, transaction.amount))
-        q.save(self.qif_filename)
+        f.write('\n'.join(q.get_raw_data()))
 
     def print_transactions(self):
         self.messenger.send_message("\nFinished! Qif contains the following transactions:")
@@ -107,7 +71,14 @@ class DataManager(object):
             self.messenger.send_message(transaction)
 
     def csv_to_qif(self):
-        self.read_csv()
-        self.relabel_transactions()
-        self.write_qif()
+        f = open(self.csv_filename)
+        self.read_csv(f)
+        f.close()
+        if self.replacements_file:
+            f = open(self.replacements_file)
+            self.relabel_transactions(f)
+            f.close()
+        f = open(self.qif_filename, 'w')
+        self.write_qif(f)
+        f.close()
         self.print_transactions()

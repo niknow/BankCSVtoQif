@@ -71,10 +71,8 @@ class SmartLabeler(object):
     def __init__(self):
         self.replacements = []
 
-    def load_replacements_from_file(self, replacements_file, account_name):
-        f = open(replacements_file)
+    def load_replacements_from_file(self, f, account_name):
         all_replacements = json.load(f)
-        f.close()
         for repdata in all_replacements[account_name]:
             r = Replacement()
             r.load_from_json(repdata)
@@ -91,3 +89,9 @@ class SmartLabeler(object):
         transaction.account = replacement.account
         return transaction
 
+    def run_replacements(self, transactions, messenger):
+        for index, transaction in enumerate(transactions):
+            replacement = self.has_replacement(transaction)
+            if replacement:
+                transactions[index] = self.replace(transaction, replacement)
+                messenger.send_message("replaced: " + transactions[index].__str__())

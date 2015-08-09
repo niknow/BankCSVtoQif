@@ -69,7 +69,7 @@ class TestTransaction(unittest.TestCase):
         self.assertEqual(transaction.amount, credit - debit)
 
 
-class TestTransactionFactors(unittest.TestCase):
+class TestTransactionFactory(unittest.TestCase):
 
     def setUp(self):
         self.account_config = DBGiro()

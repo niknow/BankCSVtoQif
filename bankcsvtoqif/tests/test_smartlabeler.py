@@ -48,6 +48,17 @@ class TestReplacement(unittest.TestCase):
         self.replacement1 = Replacement('Rent', 'Rent', 'Expenses:Rent', 1)
         self.replacement2 = Replacement('Rent', 'Rent', 'Expenses:Rent', 2)
 
+    def test_load_from_json(self):
+        pattern = 'no123'
+        new_description = 'electricity'
+        account = 'Expenses:Bills'
+        append_date = 1
+        self.replacement0.load_from_json([pattern, new_description, account, append_date])
+        self.assertEqual(self.replacement0.pattern, pattern)
+        self.assertEqual(self.replacement0.new_description, new_description)
+        self.assertEqual(self.replacement0.account, account)
+        self.assertEqual(self.replacement0.append_date, append_date)
+
     def test_replacement_matches(self):
         self.assertEqual(self.replacement1.matches('Rent'), True)
 
@@ -91,7 +102,7 @@ class TestSmartLabeler(unittest.TestCase):
     def test_load_replacements_from_file(self):
         self.replacements_file = StringIO()
         json.dump(replacements, self.replacements_file)
-        self.replacements_file.seek(0,0)
+        self.replacements_file.seek(0, 0)
         self.SmartLabeler.load_replacements_from_file(self.replacements_file, 'db_giro')
         self.assertEqual(len(self.SmartLabeler.replacements), 2)
         self.replacements_file.close()

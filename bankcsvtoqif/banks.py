@@ -21,6 +21,7 @@
 
 from datetime import datetime
 from abc import ABCMeta, abstractmethod
+import csv
 
 
 class BankAccountConfig(object):
@@ -54,6 +55,12 @@ class BankAccountConfig(object):
         if not amount:
             return 0
         return float(amount)
+
+    def get_csv_dialect(self):
+        d = csv.excel()
+        d.delimiter = self.delimiter
+        d.quotechar = self.quotechar
+        return d
 
     @abstractmethod
     def get_date(self, line):

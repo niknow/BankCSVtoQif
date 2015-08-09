@@ -22,6 +22,7 @@
 import unittest
 from datetime import datetime
 import json
+from bankcsvtoqif.io import Messenger
 
 
 try:
@@ -94,3 +95,19 @@ class TestSmartLabeler(unittest.TestCase):
         self.SmartLabeler.load_replacements_from_file(self.replacements_file, 'db_giro')
         self.assertEqual(len(self.SmartLabeler.replacements), 2)
         self.replacements_file.close()
+
+    def test_run_replacements(self):
+        self.SmartLabeler.replacements.append(Replacement('no123', 'Rent', 'Expenses:Rent', 0))
+        self.SmartLabeler.replacements.append(Replacement('RentXYZ', '', 'Expenses:Rent', 0))
+        transactions = [
+            Transaction(datetime(2015, 5, 1), 'no123 3848267', 500, 0, 'Imbalance-EUR'),
+            Transaction(datetime(2015, 5, 2), 'RentXYZ 3848267', 0, 500, 'Imbalance-EUR'),
+            Transaction(datetime(2015, 5, 3), 'foobarbar', 500, 0, 'Imbalance-EUR'),
+        ]
+        self.SmartLabeler.run_replacements(transactions, Messenger(False))
+        self.assertEqual(transactions[0].description, 'Rent')
+        self.assertEqual(transactions[0].account, 'Expenses:Rent')
+        self.assertEqual(transactions[1].description, 'RentXYZ 3848267')
+        self.assertEqual(transactions[1].account, 'Expenses:Rent')
+        self.assertEqual(transactions[2].description, 'foobarbar')
+        self.assertEqual(transactions[2].account, 'Imbalance-EUR')

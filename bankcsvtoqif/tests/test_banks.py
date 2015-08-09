@@ -19,7 +19,6 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-
 import csv
 import unittest
 from datetime import datetime
@@ -28,21 +27,17 @@ from bankcsvtoqif.banks import DBGiro, DBMaster, VRBank
 from bankcsvtoqif.transaction import TransactionFactory
 
 
-
-
 def csvline_to_line(csvline, account_config):
     csvline = csvline.splitlines()
     csv.register_dialect(
         account_config.name,
-        delimiter=account_config.delimiter,
-        quotechar=account_config.quotechar
+        account_config.get_csv_dialect()
     )
     c = csv.reader(csvline, account_config.name)
     return next(c)
 
 
 class TestDBGiro(unittest.TestCase):
-
     def setUp(self):
         self.csv = """22.04.2015;22.04.2015;"SEPA-Überweisung an";\
         Smith, John;Rent;DE12345678909876543212;\
@@ -62,7 +57,6 @@ class TestDBGiro(unittest.TestCase):
 
 
 class TestDBMaster(unittest.TestCase):
-
     def setUp(self):
         self.csv = """03.04.2015;07.04.2015;Amazon *Mktplce EU-UK AMAZON.CO.UK;;;;- 22,84;EUR"""
 
@@ -80,7 +74,6 @@ class TestDBMaster(unittest.TestCase):
 
 
 class TestVRBank(unittest.TestCase):
-
     def setUp(self):
         self.d = VRBank()
 

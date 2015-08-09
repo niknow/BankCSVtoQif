@@ -18,35 +18,42 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 import unittest
-import tempfile
-import os
+from datetime import datetime
+
 from bankcsvtoqif.io import DataManager
 from bankcsvtoqif.banks import DBGiro
+from bankcsvtoqif.transaction import Transaction
 
 
 class TestDataManager(unittest.TestCase):
     def setUp(self):
-        self.csv_file = tempfile.mkstemp(dir='.')
-        self.qif_filename = tempfile.mkstemp(dir='.')
-        self.replacements_file = tempfile.mkstemp(dir='.')
         self.account_config = DBGiro()
 
-    def tearDown(self):
-        os.close(self.csv_file[0])
-        os.close(self.qif_filename[0])
-        os.close(self.replacements_file[0])
-        os.remove(self.csv_file[1])
-        os.remove(self.qif_filename[1])
-        os.remove(self.replacements_file[1])
-
     def test_create_data_manager(self):
-        d = DataManager(
-            self.csv_file,
-            self.qif_filename,
-            self.replacements_file,
-            self.account_config,
-            False
-        )
+        d = DataManager('', '', '', self.account_config, False)
         self.assertEqual(len(d.transactions), 0)
+
+    def test_read_csv(self):
+        d = DataManager('', '', '', self.account_config, False)
+        d.read_csv(StringIO())
+        self.assertEqual(len(d.transactions), 0)
+
+    def test_relabel_transactions(self):
+        d = DataManager('', '', '', self.account_config, False)
+        d.read_csv(StringIO())
+        self.assertEqual(len(d.transactions), 0)
+
+    def test_write_qif(self):
+        d = DataManager('', '', '', self.account_config, False)
+        fake_qif = StringIO()
+        d.transactions.append(Transaction(datetime(2015, 5, 1), 'RentXYZ234 3848267', 500, 0, 'Imbalance-EUR'))
+        d.write_qif(fake_qif)
+        fake_qif.seek(0, 0)
+        self.assertEqual(len(fake_qif.readlines()), 9)
+        fake_qif.close()

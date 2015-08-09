@@ -82,3 +82,4 @@ class TransactionFactory(object):
             except IndexError:
                 messenger.send_message('skipped: %s' % line)
                 continue
+        return transactions

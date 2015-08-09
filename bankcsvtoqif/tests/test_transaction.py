@@ -22,6 +22,7 @@
 import unittest
 from datetime import datetime
 import csv
+from bankcsvtoqif.io import Messenger
 
 try:
     from StringIO import StringIO
@@ -32,25 +33,26 @@ from bankcsvtoqif.tests.test_banks import csvline_to_line
 from bankcsvtoqif.transaction import Transaction, TransactionFactory
 from bankcsvtoqif.banks import DBGiro
 
+csv_test_file = [
+    ['heading', '', '', '', 'heading'],
+    ['date'],
+    ['balance', '', '', '', '1.2345,67', '', 'EUR'],
+    ['some text'],
+    ['column heads'],
+    ['25.07.2015', '26.07.2015', '', '', 'description1', '', '', '', '', '', '', '', '', '-1,23', '', 'EUR'],
+    ['27.07.2015', '28.07.2015', '', '', 'description2', '', '', '', '', '', '', '', '', '-2,34', '', 'EUR'],
+    ['28.07.2015', '29.07.2015', '', '', 'description3', '', '', '', '', '', '', '', '', '', '4,56', 'EUR'],
+    ['balance', '28.07.2015', '', '', '2.345,67', 'EUR', ],
+]
 
-class TestTransaction(unittest.TestCase):
-
-    def setUp(self):
-        self.csv_line = """22.04.2015;22.04.2015;"SEPA-Überweisung an";\
+csv_line = """22.04.2015;22.04.2015;"SEPA-Überweisung an";\
         Smith, John;Rent;DE12345678909876543212;\
         BYLADEM1GLA;;;;;;;-10,00;;EUR"""
-        self.account_config = DBGiro()
 
-    def write_fake_csv(self):
-        fake_file = StringIO()
-        csv.register_dialect(
-            self.account_config.name,
-            self.account_config.get_csv_dialect()
-        )
-        csv_writer = csv.writer(fake_file, 'db_giro')
-        csv_writer.writerow(['hello'])
-        fake_file.seek(0,0)
-        return fake_file
+
+class TestTransaction(unittest.TestCase):
+    def setUp(self):
+        self.account_config = DBGiro()
 
     def test_create_transaction(self):
         date = datetime(2015, 5, 17)
@@ -66,8 +68,26 @@ class TestTransaction(unittest.TestCase):
         self.assertEqual(transaction.account, account)
         self.assertEqual(transaction.amount, credit - debit)
 
-    def test_transaction_factory(self):
-        line = csvline_to_line(self.csv_line, self.account_config)
+
+class TestTransactionFactors(unittest.TestCase):
+
+    def setUp(self):
+        self.account_config = DBGiro()
+
+    def write_fake_csv(self):
+        fake_file = StringIO()
+        csv.register_dialect(
+            self.account_config.name,
+            self.account_config.get_csv_dialect()
+        )
+        csv_writer = csv.writer(fake_file, 'db_giro')
+        for row in csv_test_file:
+            csv_writer.writerow(row)
+        fake_file.seek(0, 0)
+        return fake_file
+
+    def test_create_transaction_factory(self):
+        line = csvline_to_line(csv_line, self.account_config)
         transaction_factory = TransactionFactory(self.account_config)
         transaction = transaction_factory.create_from_line(line)
         self.assertEqual(transaction.date, self.account_config.get_date(line))
@@ -78,4 +98,7 @@ class TestTransaction(unittest.TestCase):
 
     def test_read_from_file(self):
         fake_csv_file = self.write_fake_csv()
-        print(fake_csv_file.readline())
+        transaction_factory = TransactionFactory(self.account_config)
+        transactions = transaction_factory.read_from_file(fake_csv_file, Messenger(False))
+        fake_csv_file.close()
+        self.assertEqual(len(transactions),3)

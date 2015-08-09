@@ -14,8 +14,6 @@ account of the transaction. In addition to the technical conversion, you can con
 relabel the description of a transaction if a certain string is matched and book this transaction to a pre-configured
 account. The rationale behind this is that many transactions occur regularly and thus can be booked automatically.
 
-**Project status:** Experimental.
-
 **Recommended Python version:** Python 3.4.3
 
 Installation

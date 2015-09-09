@@ -23,16 +23,19 @@
 
 import argparse
 import inspect
+import pkgutil
+import importlib
 from bankcsvtoqif import banks
-from bankcsvtoqif.banks import BankAccountConfig
 from bankcsvtoqif.io import DataManager
 
 
 # create dict of all bank account types
 bank_dict = {}
-for name, obj in inspect.getmembers(banks):
-    if inspect.isclass(obj) and issubclass(obj, BankAccountConfig) and not obj is BankAccountConfig:
-        bank_dict[obj.name] = obj
+for importer, modname, ispkg in pkgutil.iter_modules(banks.__path__):
+    module = importlib.import_module('bankcsvtoqif.banks.' + modname)
+    for name, obj in inspect.getmembers(module):
+        if inspect.isclass(obj) and issubclass(obj, banks.BankAccountConfig) and not obj is banks.BankAccountConfig:
+            bank_dict[modname] = obj
 
 # parse arguments
 parser = argparse.ArgumentParser(

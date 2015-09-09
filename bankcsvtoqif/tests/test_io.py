@@ -27,7 +27,7 @@ import unittest
 from datetime import datetime
 
 from bankcsvtoqif.io import DataManager
-from bankcsvtoqif.banks import DBGiro
+from bankcsvtoqif.banks.db_giro import DBGiro
 from bankcsvtoqif.transaction import Transaction
 
 

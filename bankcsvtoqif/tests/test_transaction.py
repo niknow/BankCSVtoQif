@@ -29,9 +29,9 @@ try:
 except ImportError:
     from io import StringIO
 
-from bankcsvtoqif.tests.test_banks import csvline_to_line
+from bankcsvtoqif.tests.banks import csvline_to_line
 from bankcsvtoqif.transaction import Transaction, TransactionFactory
-from bankcsvtoqif.banks import DBGiro
+from bankcsvtoqif.banks.db_giro import DBGiro
 
 csv_test_file = [
     ['heading', '', '', '', 'heading'],
@@ -77,10 +77,10 @@ class TestTransactionFactory(unittest.TestCase):
     def write_fake_csv(self):
         fake_file = StringIO()
         csv.register_dialect(
-            self.account_config.name,
+            'test_dialect',
             self.account_config.get_csv_dialect()
         )
-        csv_writer = csv.writer(fake_file, 'db_giro')
+        csv_writer = csv.writer(fake_file, 'test_dialect')
         for row in csv_test_file:
             csv_writer.writerow(row)
         fake_file.seek(0, 0)

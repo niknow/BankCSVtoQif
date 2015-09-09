@@ -20,16 +20,23 @@
 
 import unittest
 from datetime import datetime
+from bankcsvtoqif.tests.banks import csvline_to_line
+
 from bankcsvtoqif.banks.db_giro import DBGiro
 
 
 class TestDBGiro(unittest.TestCase):
+
     def setUp(self):
         self.csv = """22.04.2015;22.04.2015;"SEPA-Überweisung an";\
         Smith, John;Rent;DE12345678909876543212;\
         BYLADEM1GLA;;;;;;;-10,00;;EUR"""
 
-    def test_db_giro(self):
+    def test_can_instantiate(self):
+        account_config = DBGiro()
+        self.assertEqual(type(account_config), DBGiro)
+
+    def test_getters(self):
         account_config = DBGiro()
         line = csvline_to_line(self.csv, account_config)
         date = datetime(2015, 4, 22)

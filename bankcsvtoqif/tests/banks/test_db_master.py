@@ -20,14 +20,21 @@
 
 import unittest
 from datetime import datetime
+from bankcsvtoqif.tests.banks import csvline_to_line
+
 from bankcsvtoqif.banks.db_master import DBMaster
 
 
 class TestDBMaster(unittest.TestCase):
+
     def setUp(self):
         self.csv = """03.04.2015;07.04.2015;Amazon *Mktplce EU-UK AMAZON.CO.UK;;;;- 22,84;EUR"""
 
-    def test_db_master(self):
+    def test_can_instantiate(self):
+        account_config = DBMaster()
+        self.assertEqual(type(account_config), DBMaster)
+
+    def test_getters(self):
         account_config = DBMaster()
         line = csvline_to_line(self.csv, account_config)
         date = datetime(2015, 4, 3)

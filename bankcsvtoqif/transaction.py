@@ -68,10 +68,10 @@ class TransactionFactory(object):
 
     def read_from_file(self, f, messenger):
         csv.register_dialect(
-            self.account_config.name,
+            'bank_csv',
             self.account_config.get_csv_dialect()
         )
-        c = csv.reader(f, self.account_config.name)
+        c = csv.reader(f, 'bank_csv')
         consume(c, self.account_config.dropped_lines)  # ignore first lines
         transactions = []
         for line in c:

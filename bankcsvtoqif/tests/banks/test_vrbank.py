@@ -18,59 +18,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-
-import csv
 import unittest
-from datetime import datetime
-
-from bankcsvtoqif.banks import DBGiro, DBMaster, VRBank
 from bankcsvtoqif.transaction import TransactionFactory
 
-
-def csvline_to_line(csvline, account_config):
-    csvline = csvline.splitlines()
-    csv.register_dialect(
-        account_config.name,
-        account_config.get_csv_dialect()
-    )
-    c = csv.reader(csvline, account_config.name)
-    return next(c)
-
-
-class TestDBGiro(unittest.TestCase):
-    def setUp(self):
-        self.csv = """22.04.2015;22.04.2015;"SEPA-Überweisung an";\
-        Smith, John;Rent;DE12345678909876543212;\
-        BYLADEM1GLA;;;;;;;-10,00;;EUR"""
-
-    def test_db_giro(self):
-        account_config = DBGiro()
-        line = csvline_to_line(self.csv, account_config)
-        date = datetime(2015, 4, 22)
-        description = 'SEPA-Überweisung an Smith, John Rent'
-        debit = 10
-        credit = 0
-        self.assertEqual(account_config.get_date(line), date)
-        self.assertEqual(account_config.get_description(line), description)
-        self.assertEqual(account_config.get_debit(line), debit)
-        self.assertEqual(account_config.get_credit(line), credit)
-
-
-class TestDBMaster(unittest.TestCase):
-    def setUp(self):
-        self.csv = """03.04.2015;07.04.2015;Amazon *Mktplce EU-UK AMAZON.CO.UK;;;;- 22,84;EUR"""
-
-    def test_db_master(self):
-        account_config = DBMaster()
-        line = csvline_to_line(self.csv, account_config)
-        date = datetime(2015, 4, 3)
-        description = 'Amazon *Mktplce EU-UK AMAZON.CO.UK'
-        debit = 22.84
-        credit = 0
-        self.assertEqual(account_config.get_date(line), date)
-        self.assertEqual(account_config.get_description(line), description)
-        self.assertEqual(account_config.get_debit(line), debit)
-        self.assertEqual(account_config.get_credit(line), credit)
+from bankcsvtoqif.banks.vrbank import VRBank
 
 
 class TestVRBank(unittest.TestCase):

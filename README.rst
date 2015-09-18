@@ -12,7 +12,9 @@ of transactions downloaded from a certain bank account generate a *.qif-file as 
 imported from financial software like gnucash. The advantage of qif over csv is that qif allows to store the target
 account of the transaction. In addition to the technical conversion, you can configure replacements that automatically
 relabel the description of a transaction if a certain string is matched and book this transaction to a pre-configured
-account. The rationale behind this is that many transactions occur regularly and thus can be booked automatically.
+account. The rationale behind this is that many transactions occur regularly and thus can be booked automatically. 
+
+A list of supported banks is provided by the folder `bankcsvtoqif/banks`, see developers_. section to add more banks.
 
 **Recommended Python version:** Python 3.4.3
 
@@ -70,25 +72,35 @@ account of that transaction will be set to "Expenses:Flat:Rent". The append flag
 bank account types. If you import the resulting qif into gnucash, the transaction will be booked automatically to the
 specified target account. All in all this achieves that you don't have to manually book a regular transaction every time.
 
+.. _developers:
+
 For developers: Creating new bank account types
+-------
+In case you are a customer of a bank, which is not in the list yet, you can have to options of adding it.
+
+Open an issue on github
 ~~~~~~~
-In case you are a customer of a bank, which is not in the list yet, you can add it as follows: The
-`setup.py install` installs a python module named `bankcsvtoqif`, which contains the `banks.py`. You can copy/paste
-an existing bank account type class and modify it to fit a new bank account type. You have to give the class a
-unique name and it has to be a subclass of `BankAccountConfig`. To parse the csv from a bank successfully, you have
-to adapt the following parameters::
+State which bank you would like to add and supply a csv-file with a dummy bank statement, i.e. a typical csv bank statement of this bank, but with anonymized data. This can be obtained easily by taking a real bank statement, deleting all but a few transactions and replacing sensitive information like name, account number, customer identifiers in descriptions etc. by dummy data like `ABC` or `1.23`. **Please do not send us any sensitive financial data.**
 
-    self.delimiter = ';'     #delimiter character to parse the csv
-    self.quotechar = '"'     #quotation character to parse the csv
-    self.dropped_lines = 5   #number of initial lines in the csv that do not contain transaction data
+Add the bank to the `banks` folder
+~~~~~~~
+Implement a csv parser for your bank. For that you have to fork and clone the repo andthen  add a file, e.g. `my_bank.py` in the banks folder:
 
-Then you have to implement the abstractmethods such that they correctly parse the csv from that bank, see also the
-`BankAccountConfig` class for more documentation on this.
+    bankcsvtoqif\banks
+        __init__.py
+        ...
+        db_giro.py
+        my_bank.py
 
-It is a good idea to write tests, to install the dependencies used for testing and execute the test, just do
+You can use an existing bank like `db_giro.py` as a blueprint. The abstract class `BankAccountConfig` in `__init__.py` contains more information. It is a good idea to also supply a unit test `test_my_bank.py` for your bank in
 
-    python setup.py test
+    bankcsvtoqif\tests\banks
+        __init__.py
+        ...
+        test_db_giro.py
+        test_my_bank.py
 
+You can use an existing test like `test_db_giro.py` as a blueprint. Test your bank on your local machine an make a pull request when you are finished.
 
 Uninstallation
 -------

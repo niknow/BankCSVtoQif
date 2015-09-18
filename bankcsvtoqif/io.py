@@ -38,12 +38,19 @@ class Messenger(object):
 class DataManager(object):
     """ Main class to interact with the user. """
 
-    def __init__(self, csv_filename, qif_filename, replacements_file, account_config, verbose):
-        self.csv_filename = csv_filename
-        self.qif_filename = qif_filename
-        self.replacements_file = replacements_file
+    def __init__(self, account_config, args):
+
         self.account_config = account_config
-        self.messenger = Messenger(verbose)
+        if args.source_account:
+            self.account_config.default_source_account = args.source_account
+        if args.target_account:
+            self.account_config.default_target_account = args.target_account
+
+        self.type = args.type
+        self.csv_filename = args.csv_file
+        self.qif_filename = args.qif_file if args.qif_file else args.csv_file[:-3] + 'qif'
+        self.replacements_file = args.replacements
+        self.messenger = Messenger(args.v)
         self.transactions = []
 
     def read_csv(self, f):
@@ -54,7 +61,7 @@ class DataManager(object):
     def relabel_transactions(self, f):
         self.messenger.send_message("\nConducting automatic replacements using " + self.replacements_file + "...")
         smart_labeler = SmartLabeler()
-        smart_labeler.load_replacements_from_file(f, self.account_config.name)
+        smart_labeler.load_replacements_from_file(f, self.type)
         smart_labeler.run_replacements(self.transactions, self.messenger)
 
     def write_qif(self, f):

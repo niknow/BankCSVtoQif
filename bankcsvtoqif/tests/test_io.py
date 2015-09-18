@@ -31,26 +31,38 @@ from bankcsvtoqif.banks.db_giro import DBGiro
 from bankcsvtoqif.transaction import Transaction
 
 
+class MockArgs(object):
+
+    def __init__(self):
+        self.type = None
+        self.csv_file = ''
+        self.qif_file = ''
+        self.source_account = 'Assets:Current Assets:Checking Account'
+        self.target_account = 'Imbalance-EUR'
+        self.replacements = None
+        self.v = False
+
+
 class TestDataManager(unittest.TestCase):
     def setUp(self):
         self.account_config = DBGiro()
 
     def test_create_data_manager(self):
-        d = DataManager('', '', '', self.account_config, False)
+        d = DataManager(self.account_config, MockArgs())
         self.assertEqual(len(d.transactions), 0)
 
     def test_read_csv(self):
-        d = DataManager('', '', '', self.account_config, False)
+        d = DataManager(self.account_config, MockArgs())
         d.read_csv(StringIO())
         self.assertEqual(len(d.transactions), 0)
 
     def test_relabel_transactions(self):
-        d = DataManager('', '', '', self.account_config, False)
+        d = DataManager(self.account_config, MockArgs())
         d.read_csv(StringIO())
         self.assertEqual(len(d.transactions), 0)
 
     def test_write_qif(self):
-        d = DataManager('', '', '', self.account_config, False)
+        d = DataManager(self.account_config, MockArgs())
         fake_qif = StringIO()
         d.transactions.append(Transaction(datetime(2015, 5, 1), 'RentXYZ234 3848267', 500, 0, 'Imbalance-EUR'))
         d.write_qif(fake_qif)

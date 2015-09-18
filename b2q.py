@@ -53,20 +53,6 @@ parser.add_argument('-r', '--replacements', nargs='?', const='replacements.ini',
 parser.add_argument('-v', action='store_true', help="produce output during conversion")
 args = parser.parse_args()
 
-# configure account according to arguments
 account_config = bank_dict[args.type]()
-if args.source_account:
-    account_config.default_source_account = args.source_account
-if args.target_account:
-    account_config.default_target_account = args.target_account
-qfile = args.qif_file if args.qif_file else args.csv_file[:-3] + 'qif'
-
-# run conversion and print result
-data_manager = DataManager(
-    args.csv_file,
-    qfile,
-    args.replacements,
-    account_config,
-    args.v
-)
+data_manager = DataManager(account_config, args)
 data_manager.csv_to_qif()

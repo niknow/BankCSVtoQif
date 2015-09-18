@@ -14,7 +14,7 @@ account of the transaction. In addition to the technical conversion, you can con
 relabel the description of a transaction if a certain string is matched and book this transaction to a pre-configured
 account. The rationale behind this is that many transactions occur regularly and thus can be booked automatically. 
 
-A list of supported banks is provided by the folder `bankcsvtoqif/banks`, see developers_. section to add more banks.
+A list of supported banks is provided by the folder `bankcsvtoqif/banks`, see developers_ section to add more banks.
 
 **Recommended Python version:** Python 3.4.3
 
@@ -87,18 +87,19 @@ Add the bank to the `banks` folder
 Implement a csv parser for your bank. For that you have to fork and clone the repo andthen  add a file, e.g. `my_bank.py` in the banks folder:
 
     bankcsvtoqif\banks
-        __init__.py
-        ...
-        db_giro.py
-        my_bank.py
+    __init__.py
+    ...
+    db_giro.py
+    ...
+    my_bank.py
 
 You can use an existing bank like `db_giro.py` as a blueprint. The abstract class `BankAccountConfig` in `__init__.py` contains more information. It is a good idea to also supply a unit test `test_my_bank.py` for your bank in
 
     bankcsvtoqif\tests\banks
-        __init__.py
-        ...
-        test_db_giro.py
-        test_my_bank.py
+    __init__.py
+    ...
+    test_db_giro.py
+    test_my_bank.py
 
 You can use an existing test like `test_db_giro.py` as a blueprint. Test your bank on your local machine an make a pull request when you are finished.
 

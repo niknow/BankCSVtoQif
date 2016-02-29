@@ -29,7 +29,7 @@ class TestSpardaBank(unittest.TestCase):
 
     def setUp(self):
         self.csv = """22.04.2015;22.04.2015;\
-        "SEPA-Überweisung an Smith, John Rent DE12345678909876543212";\
+        SEPA-Überweisung an Smith, John Rent DE12345678909876543212;\
         -10,00;EUR;ATargetAccount"""
 
     def test_can_instantiate(self):

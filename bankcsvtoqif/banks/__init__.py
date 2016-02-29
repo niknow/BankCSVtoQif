@@ -60,6 +60,9 @@ class BankAccountConfig(object):
         d.quotechar = self.quotechar
         return d
 
+    def get_target_account(self, line):
+        return self.default_target_account
+
     @abstractmethod
     def get_date(self, line):
         """

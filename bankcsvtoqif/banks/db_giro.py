@@ -43,7 +43,7 @@ class DBGiro(BankAccountConfig):
         return ' '.join(description.split())
 
     def get_debit(self, line):
-        return self.get_absolute_amount(line[13])
+        return self.get_absolute_amount(line[14])
 
     def get_credit(self, line):
-        return self.get_absolute_amount(line[14])
+        return self.get_absolute_amount(line[15])

@@ -28,9 +28,12 @@ from bankcsvtoqif.banks.sparda import SpardaBank
 class TestSpardaBank(unittest.TestCase):
 
     def setUp(self):
-        self.csv = """22.04.2015;22.04.2015;\
+        self.csv = """22.04.2015;\
+        22.04.2015;\
         SEPA-Überweisung an Smith, John Rent DE12345678909876543212;\
-        -10,00;EUR;ATargetAccount"""
+        -10,00;\
+        EUR;\
+        ATargetAccount"""
 
     def test_can_instantiate(self):
         account_config = SpardaBank()
@@ -42,6 +45,25 @@ class TestSpardaBank(unittest.TestCase):
         date = datetime(2015, 4, 22)
         description = 'SEPA-Überweisung an Smith, John Rent DE12345678909876543212'
         targetAccount = 'ATargetAccount'
+        debit = 10
+        credit = 0
+        self.assertEqual(account_config.get_date(line), date)
+        self.assertEqual(account_config.get_description(line), description)
+        self.assertEqual(account_config.get_debit(line), debit)
+        self.assertEqual(account_config.get_credit(line), credit)
+        self.assertEqual(account_config.get_target_account(line), targetAccount)
+
+    def test_getters(self):
+        account_config = SpardaBank()
+        other_csv = """22.04.2015;\
+        22.04.2015;\
+        SEPA-Überweisung an Smith, John Rent DE12345678909876543212;\
+        -10,00;\
+        EUR"""
+        line = csvline_to_line(other_csv, account_config)
+        date = datetime(2015, 4, 22)
+        description = 'SEPA-Überweisung an Smith, John Rent DE12345678909876543212'
+        targetAccount = 'Imbalance-EUR'
         debit = 10
         credit = 0
         self.assertEqual(account_config.get_date(line), date)

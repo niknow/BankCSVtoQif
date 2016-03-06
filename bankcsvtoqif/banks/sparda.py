@@ -51,6 +51,9 @@ class SpardaBank(BankAccountConfig):
         return val if val >= 0 else 0
 
     def get_target_account(self, line):
-        s = line[len(line)-1]
+        if len(line) == 6:
+           s = line[5]
+        else:
+           s = self.default_target_account;
         return s
 

@@ -63,7 +63,7 @@ class TransactionFactory(object):
             self.account_config.get_description(line),
             self.account_config.get_debit(line),
             self.account_config.get_credit(line),
-            self.account_config.default_target_account
+            self.account_config.get_target_account(line)
         )
 
     def read_from_file(self, f, messenger):

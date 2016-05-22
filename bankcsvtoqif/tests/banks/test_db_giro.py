@@ -30,7 +30,7 @@ class TestDBGiro(unittest.TestCase):
     def setUp(self):
         self.csv = """22.04.2015;22.04.2015;"SEPA-Überweisung an";\
         Smith, John;Rent;DE12345678909876543212;\
-        BYLADEM1GLA;;;;;;;-10,00;;EUR"""
+        BYLADEM1GLA;;;;;;;;-10,00;;EUR"""
 
     def test_can_instantiate(self):
         account_config = DBGiro()

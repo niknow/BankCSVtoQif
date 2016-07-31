@@ -36,7 +36,7 @@ class Qif(object):
             '^'
         ]
         for t in self.transactions:
-            lines += t.get_lines()
+            lines += t.to_qif_line()
         return lines
 
 
@@ -49,7 +49,7 @@ class Transaction(object):
         self.description = description
         self.amount = amount
 
-    def get_lines(self):
+    def to_qif_line(self):
         return [
             '!Type:Cash',
             'D' + self.date.strftime('%m/%d/%y'),

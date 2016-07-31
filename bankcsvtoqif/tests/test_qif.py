@@ -50,7 +50,7 @@ class TestQif(unittest.TestCase):
             'N' + self.account,
             '^'
         ]
-        lines += t.get_lines()
+        lines += t.to_qif_line()
         self.assertEqual(lines, q.get_raw_data())
 
 
@@ -70,7 +70,7 @@ class TestTransaction(unittest.TestCase):
 
     def test_get_lines(self):
         t = Transaction(self.date, self.account, self.description, self.amount)
-        self.assertEqual(len(t.get_lines()), 6)
+        self.assertEqual(len(t.to_qif_line()), 6)
 
 
 

@@ -30,8 +30,10 @@ class Messenger(object):
     def __init__(self, on):
         self.on = on
 
-    def send_message(self, msg):
+    def send_message(self, msg, preblanks=0):
         if self.on:
+            for blank in range(0, preblanks):
+                print()
             print(msg)
 
 
@@ -54,18 +56,18 @@ class DataManager(object):
         self.transactions = []
 
     def read_csv(self, f):
-        self.messenger.send_message("\nParsing csv-file from" + self.csv_filename + "...")
+        self.messenger.send_message("Parsing csv-file from" + self.csv_filename + "...", preblanks=1)
         transaction_factory = TransactionFactory(self.account_config)
         self.transactions = transaction_factory.read_from_file(f, self.messenger)
 
     def relabel_transactions(self, f):
-        self.messenger.send_message("\nConducting automatic replacements using " + self.replacements_file + "...")
+        self.messenger.send_message("Conducting automatic replacements using " + self.replacements_file + "...", preblanks=1)
         smart_labeler = SmartLabeler()
         smart_labeler.load_replacements_from_file(f, self.type)
         smart_labeler.run_replacements(self.transactions, self.messenger)
 
     def write_qif(self, f):
-        self.messenger.send_message("\nWriting qif-file to " + self.qif_filename + "...")
+        self.messenger.send_message("Writing qif-file to " + self.qif_filename + "...", preblanks=1)
         q = qif.Qif(self.account_config.default_source_account)
         for transaction in self.transactions:
             q.add_transaction(
@@ -73,7 +75,7 @@ class DataManager(object):
         f.write('\n'.join(q.get_raw_data()))
 
     def print_transactions(self):
-        self.messenger.send_message("\nFinished! Qif contains the following transactions:")
+        self.messenger.send_message("Finished! Qif contains the following transactions:", preblanks=1)
         for transaction in self.transactions:
             self.messenger.send_message(transaction)
 

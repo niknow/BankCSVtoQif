@@ -54,6 +54,6 @@ class SpardaBank(BankAccountConfig):
         if len(line) == 6:
            s = line[5]
         else:
-           s = self.default_target_account;
+           s = self.default_target_account
         return s
 

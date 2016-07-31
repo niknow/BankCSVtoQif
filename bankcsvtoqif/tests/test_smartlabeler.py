@@ -94,10 +94,10 @@ class TestSmartLabeler(unittest.TestCase):
     def test_replace(self):
         replaced_transaction = self.SmartLabeler.replace(self.transaction, self.replacement1)
         self.assertEqual(replaced_transaction.description, self.replacement1.new_description)
-        self.assertEqual(replaced_transaction.account, self.replacement1.account)
+        self.assertEqual(replaced_transaction.target_account, self.replacement1.account)
         replaced_transaction = self.SmartLabeler.replace(self.transaction, self.replacement2)
         self.assertEqual(replaced_transaction.description, self.transaction.description)
-        self.assertEqual(replaced_transaction.account, self.replacement2.account)
+        self.assertEqual(replaced_transaction.target_account, self.replacement2.account)
 
     def test_load_replacements_from_file(self):
         self.replacements_file = StringIO()
@@ -117,8 +117,8 @@ class TestSmartLabeler(unittest.TestCase):
         ]
         self.SmartLabeler.run_replacements(transactions, Messenger(False))
         self.assertEqual(transactions[0].description, 'Rent')
-        self.assertEqual(transactions[0].account, 'Expenses:Rent')
+        self.assertEqual(transactions[0].target_account, 'Expenses:Rent')
         self.assertEqual(transactions[1].description, 'RentXYZ 3848267')
-        self.assertEqual(transactions[1].account, 'Expenses:Rent')
+        self.assertEqual(transactions[1].target_account, 'Expenses:Rent')
         self.assertEqual(transactions[2].description, 'foobarbar')
-        self.assertEqual(transactions[2].account, 'Imbalance-EUR')
+        self.assertEqual(transactions[2].target_account, 'Imbalance-EUR')

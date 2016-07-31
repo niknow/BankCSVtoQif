@@ -47,7 +47,6 @@ class DataManager(object):
             self.account_config.default_source_account = args.source_account
         if args.target_account:
             self.account_config.default_target_account = args.target_account
-
         self.type = args.type
         self.csv_filename = args.csv_file
         self.qif_filename = args.qif_file if args.qif_file else args.csv_file[:-3] + 'qif'
@@ -71,7 +70,7 @@ class DataManager(object):
         q = qif.Qif(self.account_config.default_source_account)
         for transaction in self.transactions:
             q.add_transaction(
-                qif.Transaction(transaction.date, transaction.account, transaction.description, transaction.amount))
+                qif.Transaction(transaction.date, transaction.target_account, transaction.description, transaction.amount))
         f.write('\n'.join(q.get_raw_data()))
 
     def print_transactions(self):

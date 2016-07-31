@@ -65,7 +65,7 @@ class TestTransaction(unittest.TestCase):
         self.assertEqual(transaction.description, description)
         self.assertEqual(transaction.debit, debit)
         self.assertEqual(transaction.credit, credit)
-        self.assertEqual(transaction.account, account)
+        self.assertEqual(transaction.target_account, account)
         self.assertEqual(transaction.amount, credit - debit)
 
 
@@ -94,7 +94,7 @@ class TestTransactionFactory(unittest.TestCase):
         self.assertEqual(transaction.description, self.account_config.get_description(line))
         self.assertEqual(transaction.debit, self.account_config.get_debit(line))
         self.assertEqual(transaction.credit, self.account_config.get_credit(line))
-        self.assertEqual(transaction.account, self.account_config.default_target_account)
+        self.assertEqual(transaction.target_account, self.account_config.default_target_account)
 
     def test_read_from_file(self):
         fake_csv_file = self.write_fake_csv()

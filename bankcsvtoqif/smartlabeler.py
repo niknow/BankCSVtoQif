@@ -88,7 +88,7 @@ class SmartLabeler(object):
     def replace(self, transaction, replacement):
         if replacement.new_description:
             transaction.description = replacement.get_description(transaction.date)
-        transaction.account = replacement.account
+        transaction.target_account = replacement.account
         return transaction
 
     def run_replacements(self, transactions, messenger):

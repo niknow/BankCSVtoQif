@@ -34,12 +34,12 @@ def consume(iterator, n):
 class Transaction(object):
     """ Represents a transaction obtained from csv-file. """
 
-    def __init__(self, date, description, debit, credit, account):
+    def __init__(self, date, description, debit, credit, target_account):
         self.date = date
         self.description = description
         self.debit = debit
         self.credit = credit
-        self.account = account
+        self.target_account = target_account
 
     def __str__(self):
         return '<Transaction %s, %s, %s, %s, %s>'% (
@@ -47,7 +47,7 @@ class Transaction(object):
             self.description,
             self.debit,
             self.credit,
-            self.account
+            self.target_account
         )
 
     @property

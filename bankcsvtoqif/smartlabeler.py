@@ -27,9 +27,11 @@ import json
 
 
 class Replacement(object):
-    """ A class to automatically handle replacements in transactions. If 'pattern' is matched in the
-        original description of a transaction, the description is replaced by 'new_description' and the
-        target account 'account' is automatically added. The 'append_date'-flag works as follows:
+    """ A class to automatically handle replacements in transactions.
+        If 'pattern' is matched in the original description of a transaction,
+        the description is replaced by 'new_description' and the
+        target account 'account' is automatically added. The
+        'append_date'-flag works as follows:
         append_date = 0: nothing is appended to 'new_description'
         append_date = 1: appends year-month to 'new_description' like 2015-05
         append_date = 2: appends year-next_month to 'new_description' like 2015-06
@@ -66,7 +68,7 @@ class Replacement(object):
 
 
 class SmartLabeler(object):
-    """ Relabels descriptions of transactions using Replacements.  """
+    """ Relabels descriptions of transactions using Replacements. """
 
     def __init__(self):
         self.replacements = []

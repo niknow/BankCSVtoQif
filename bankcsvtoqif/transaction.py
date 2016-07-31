@@ -25,13 +25,11 @@ from itertools import islice
 
 def consume(iterator, n):
     """Advance the iterator n-steps ahead. If n is none, consume entirely."""
-    # Use functions that consume iterators at C speed.
     if n is None:
-        # feed the entire iterator into a zero-length deque
         collections.deque(iterator, maxlen=0)
     else:
-        # advance to the empty slice starting at position n
         next(islice(iterator, n, n), None)
+
 
 class Transaction(object):
     """ Represents a transaction obtained from csv-file. """
@@ -44,7 +42,13 @@ class Transaction(object):
         self.account = account
 
     def __str__(self):
-        return '<Transaction %s, %s, %s, %s, %s>' % (self.date, self.description, self.debit, self.credit, self.account)
+        return '<Transaction %s, %s, %s, %s, %s>'% (
+            self.date,
+            self.description,
+            self.debit,
+            self.credit,
+            self.account
+        )
 
     @property
     def amount(self):

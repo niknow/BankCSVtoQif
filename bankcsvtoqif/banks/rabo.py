@@ -2,7 +2,7 @@
 
 
 # BankCSVtoQif - Smart conversion of csv files from a bank to qif
-# Copyright (C) 2015  Nikolai Nowaczyk
+# Copyright (C) 2015-2016  Nikolai Nowaczyk
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

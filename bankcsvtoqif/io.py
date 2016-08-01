@@ -19,7 +19,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-import bankcsvtoqif.qif as qif
+from bankcsvtoqif.qif import QifFile
 from bankcsvtoqif.smartlabeler import SmartLabeler
 from bankcsvtoqif.transaction import TransactionFactory
 
@@ -67,7 +67,7 @@ class DataManager(object):
 
     def write_qif(self, f):
         self.messenger.send_message("Writing qif-file to " + self.qif_filename + "...", preblanks=1)
-        q = qif.QifFile(self.account_config.default_source_account)
+        q = QifFile(self.account_config.default_source_account)
         f.write('\n'.join(q.get_raw_data(self.transactions)))
 
     def print_transactions(self):

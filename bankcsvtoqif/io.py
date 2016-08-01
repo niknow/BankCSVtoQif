@@ -68,9 +68,7 @@ class DataManager(object):
     def write_qif(self, f):
         self.messenger.send_message("Writing qif-file to " + self.qif_filename + "...", preblanks=1)
         q = qif.Qif(self.account_config.default_source_account)
-        for transaction in self.transactions:
-            q.add_transaction(
-                qif.Transaction(transaction.date, transaction.target_account, transaction.description, transaction.amount))
+        q.transactions = self.transactions
         f.write('\n'.join(q.get_raw_data()))
 
     def print_transactions(self):

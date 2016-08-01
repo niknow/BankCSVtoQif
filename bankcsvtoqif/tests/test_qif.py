@@ -21,7 +21,7 @@
 
 import unittest
 from datetime import datetime
-from bankcsvtoqif.qif import Transaction, Qif
+from bankcsvtoqif.qif import Qif
 
 
 class TestQif(unittest.TestCase):

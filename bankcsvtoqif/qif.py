@@ -38,23 +38,3 @@ class Qif(object):
         for t in self.transactions:
             lines += t.to_qif_line()
         return lines
-
-
-class Transaction(object):
-    """ A qif-Transaction. """
-
-    def __init__(self, date, account, description, amount):
-        self.date = date
-        self.account = account
-        self.description = description
-        self.amount = amount
-
-    def to_qif_line(self):
-        return [
-            '!Type:Cash',
-            'D' + self.date.strftime('%m/%d/%y'),
-            'S' + self.account,
-            'P' + self.description,
-            '$' + '%.2f' % self.amount,
-            '^'
-        ]

@@ -54,6 +54,16 @@ class Transaction(object):
     def amount(self):
         return self.credit - self.debit
 
+    def to_qif_line(self):
+        return [
+            '!Type:Cash',
+            'D' + self.date.strftime('%m/%d/%y'),
+            'S' + self.target_account,
+            'P' + self.description,
+            '$' + '%.2f' % self.amount,
+            '^'
+        ]
+
 
 class TransactionFactory(object):
     """ Creates Transactions from an account_config. """

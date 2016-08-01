@@ -19,7 +19,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-class Qif(object):
+class QifFile(object):
     """ Interface to .qif-file. """
 
     def __init__(self, account):

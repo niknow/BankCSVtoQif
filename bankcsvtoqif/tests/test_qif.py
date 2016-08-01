@@ -21,7 +21,7 @@
 
 import unittest
 from datetime import datetime
-from bankcsvtoqif.qif import Qif
+from bankcsvtoqif.qif import QifFile
 from bankcsvtoqif.transaction import Transaction
 
 
@@ -33,11 +33,11 @@ class TestQif(unittest.TestCase):
         self.amount = - 2.50
 
     def test_create_qif(self):
-        q = Qif(self.account)
+        q = QifFile(self.account)
         self.assertEqual(q.account, self.account)
 
     def test_get_raw_data(self):
-        q = Qif(self.account)
+        q = QifFile(self.account)
         t = Transaction(self.date, self.description, 0, self.amount, 'Expenses:Rent')
         lines = [
             '!Account',

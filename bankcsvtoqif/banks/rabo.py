@@ -49,3 +49,6 @@ class RaboBank(BankAccountConfig):
     def get_credit(self, line):
         val = float(line[4])
         return val if line[3] == "C" else 0
+
+    def get_source_account(self, line):
+        return line[0]

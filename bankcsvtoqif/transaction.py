@@ -34,12 +34,13 @@ def consume(iterator, n):
 class Transaction(object):
     """ Represents a transaction obtained from csv-file. """
 
-    def __init__(self, date, description, debit, credit, target_account):
+    def __init__(self, date, description, debit, credit, target_account, source_account='Assets:Current Assets:Checking Account'):
         self.date = date
         self.description = description
         self.debit = debit
         self.credit = credit
         self.target_account = target_account
+        self.source_account = source_account
 
     def __str__(self):
         return '<Transaction %s, %s, %s, %s, %s>'% (
@@ -73,11 +74,12 @@ class TransactionFactory(object):
 
     def create_from_line(self, line):
         return Transaction(
-            self.account_config.get_date(line),
-            self.account_config.get_description(line),
-            self.account_config.get_debit(line),
-            self.account_config.get_credit(line),
-            self.account_config.default_target_account
+            date=self.account_config.get_date(line),
+            description=self.account_config.get_description(line),
+            debit=self.account_config.get_debit(line),
+            credit=self.account_config.get_credit(line),
+            target_account=self.account_config.get_target_account(line),
+            source_account=self.account_config.get_source_account(line)
         )
 
     def read_from_file(self, f, messenger):

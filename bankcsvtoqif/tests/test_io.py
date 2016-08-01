@@ -64,7 +64,13 @@ class TestDataManager(unittest.TestCase):
     def test_write_qif(self):
         d = DataManager(self.account_config, MockArgs())
         fake_qif = StringIO()
-        d.transactions.append(Transaction(datetime(2015, 5, 1), 'RentXYZ234 3848267', 500, 0, 'Imbalance-EUR'))
+        t = Transaction(
+            date=datetime(2015, 5, 1),
+            description='RentXYZ234 3848267',
+            debit=500,
+            credit=0,
+            target_account='Imbalance-EUR')
+        d.transactions.append(t)
         d.write_qif(fake_qif)
         fake_qif.seek(0, 0)
         self.assertEqual(len(fake_qif.readlines()), 9)

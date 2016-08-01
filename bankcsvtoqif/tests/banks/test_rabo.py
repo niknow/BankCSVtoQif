@@ -25,7 +25,7 @@ from bankcsvtoqif.tests.banks import csvline_to_line
 from bankcsvtoqif.banks.rabo import RaboBank
 
 
-class TestLLoyds(unittest.TestCase):
+class TestRabo(unittest.TestCase):
 
     def setUp(self):
         self.csv = """"NL05RABO1234567890","EUR","20160623","D","123.23","","","20160622","gb","","XXXXXXXXX SXXXXXX \LONDON","Geldautomaat 20:20 pasnr. 015","GBP 120,00 EUR = 0,876543 GBP","","","","","","""""
@@ -41,7 +41,9 @@ class TestLLoyds(unittest.TestCase):
         description = "XXXXXXXXX SXXXXXX \LONDON Geldautomaat 20:20 pasnr. 015"
         debit = 123.23
         credit = 0
+        source_account = "NL05RABO1234567890"
         self.assertEqual(account_config.get_date(line), date)
         self.assertEqual(account_config.get_description(line), description)
         self.assertEqual(account_config.get_debit(line), debit)
         self.assertEqual(account_config.get_credit(line), credit)
+        self.assertEqual(account_config.get_source_account(line), source_account)

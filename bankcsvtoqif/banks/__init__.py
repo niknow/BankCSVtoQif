@@ -91,3 +91,23 @@ class BankAccountConfig(object):
         :return: credit of transaction as non-negative float
         """
         pass
+
+    def get_target_account(self, line):
+        """
+        This function can be overloaded for banks whose csv format
+        already contains the target account.
+        :param line: #of csv
+        :return: target account of a transaction
+        """
+        return self.default_target_account
+
+    def get_source_account(self, line):
+        """
+        This function can be overloaded for banks whose csv format
+        contains transactions from multiple accounts making it neccessary
+        to parse the source account.
+        :param line: #of csv
+        :return: source account of a transaction
+
+        """
+        return self.default_source_account

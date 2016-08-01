@@ -25,19 +25,18 @@ from bankcsvtoqif.qif import QifFile
 from bankcsvtoqif.transaction import Transaction
 
 
-class TestQif(unittest.TestCase):
+class TestQifFile(unittest.TestCase):
     def setUp(self):
         self.date = datetime(2015, 5, 1)
-        self.account = 'Assets:CurrentAssets:Checking Account'
+        self.account = 'Assets:Current Assets:Checking Account'
         self.description = 'icecream'
         self.amount = - 2.50
 
     def test_create_qif(self):
-        q = QifFile(self.account)
-        self.assertEqual(q.account, self.account)
+        q = QifFile(['foo'])
+        self.assertEqual(q.transactions, ['foo'])
 
     def test_get_raw_data(self):
-        q = QifFile(self.account)
         t = Transaction(self.date, self.description, 0, self.amount, 'Expenses:Rent')
         lines = [
             '!Account',
@@ -45,4 +44,5 @@ class TestQif(unittest.TestCase):
             '^'
         ]
         lines += t.to_qif_line()
-        self.assertEqual(lines, q.get_raw_data([t]))
+        q = QifFile([t])
+        self.assertEqual(lines, q.get_raw_data())

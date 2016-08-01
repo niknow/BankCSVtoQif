@@ -22,15 +22,24 @@
 class QifFile(object):
     """ Interface to .qif-file. """
 
-    def __init__(self, account):
-        self.account = account
+    def __init__(self, transactions):
+        self.transactions = transactions
 
-    def get_raw_data(self, transactions):
-        lines = [
+    def get_raw_data(self):
+        lines=[]
+        for source_account in self._get_unique_source_accounts():
+            lines += self._get_qif_source_account_line(source_account)
+            transactions = [t for t in self.transactions if t.source_account==source_account]
+            for t in transactions:
+                lines += t.to_qif_line()
+        return lines
+
+    def _get_unique_source_accounts(self):
+        return set([t.source_account for t in self.transactions])
+
+    def _get_qif_source_account_line(self, source_account):
+        return [
             '!Account',
-            'N' + self.account,
+            'N' + source_account,
             '^'
         ]
-        for t in transactions:
-            lines += t.to_qif_line()
-        return lines

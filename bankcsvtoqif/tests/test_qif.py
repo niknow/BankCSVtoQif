@@ -22,6 +22,7 @@
 import unittest
 from datetime import datetime
 from bankcsvtoqif.qif import Qif
+from bankcsvtoqif.transaction import Transaction
 
 
 class TestQif(unittest.TestCase):
@@ -35,43 +36,13 @@ class TestQif(unittest.TestCase):
         q = Qif(self.account)
         self.assertEqual(q.account, self.account)
 
-    def test_add_transaction(self):
-        q = Qif(self.account)
-        t = Transaction(self.date, self.account, self.description, self.amount)
-        q.add_transaction(t)
-        self.assertEqual(len(q.transactions), 1)
-
     def test_get_raw_data(self):
         q = Qif(self.account)
-        t = Transaction(self.date, self.account, self.description, self.amount)
-        q.add_transaction(t)
+        t = Transaction(self.date, self.description, 0, self.amount, 'Expenses:Rent')
         lines = [
             '!Account',
             'N' + self.account,
             '^'
         ]
         lines += t.to_qif_line()
-        self.assertEqual(lines, q.get_raw_data())
-
-
-class TestTransaction(unittest.TestCase):
-    def setUp(self):
-        self.date = datetime(2015, 5, 1)
-        self.account = 'Assets:CurrentAssets:Checking Account'
-        self.description = 'icecream'
-        self.amount = - 2.50
-
-    def test_create_transaction(self):
-        t = Transaction(self.date, self.account, self.description, self.amount)
-        self.assertEqual(self.date, t.date)
-        self.assertEqual(self.account, t.account)
-        self.assertEqual(self.description, t.description)
-        self.assertEqual(self.amount, t.amount)
-
-    def test_get_lines(self):
-        t = Transaction(self.date, self.account, self.description, self.amount)
-        self.assertEqual(len(t.to_qif_line()), 6)
-
-
-
-
+        self.assertEqual(lines, q.get_raw_data([t]))

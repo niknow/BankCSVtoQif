@@ -59,14 +59,23 @@ class TestTransaction(unittest.TestCase):
         description = 'milk'
         debit = 1.05
         credit = 0
-        account = 'Expenses:Groceries'
-        transaction = Transaction(date, description, debit, credit, account)
+        target_account = 'Expenses:Groceries'
+        transaction = Transaction(date, description, debit, credit, target_account)
         self.assertEqual(transaction.date, date)
         self.assertEqual(transaction.description, description)
         self.assertEqual(transaction.debit, debit)
         self.assertEqual(transaction.credit, credit)
-        self.assertEqual(transaction.target_account, account)
+        self.assertEqual(transaction.target_account, target_account)
         self.assertEqual(transaction.amount, credit - debit)
+
+    def test_to_qif_line(self):
+        date = datetime(2015, 5, 17)
+        description = 'milk'
+        debit = 1.05
+        credit = 0
+        target_account = 'Expenses:Groceries'
+        t = Transaction(date, description, debit, credit, target_account)
+        self.assertEqual(len(t.to_qif_line()), 6)
 
 
 class TestTransactionFactory(unittest.TestCase):

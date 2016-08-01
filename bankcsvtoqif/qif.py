@@ -24,17 +24,13 @@ class Qif(object):
 
     def __init__(self, account):
         self.account = account
-        self.transactions = []
 
-    def add_transaction(self, transaction):
-        self.transactions.append(transaction)
-
-    def get_raw_data(self):
+    def get_raw_data(self, transactions):
         lines = [
             '!Account',
             'N' + self.account,
             '^'
         ]
-        for t in self.transactions:
+        for t in transactions:
             lines += t.to_qif_line()
         return lines

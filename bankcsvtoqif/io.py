@@ -22,6 +22,7 @@
 from bankcsvtoqif.qif import QifFile
 from bankcsvtoqif.smartlabeler import SmartLabeler
 from bankcsvtoqif.transaction import TransactionFactory
+from bankcsvtoqif.app import bank_dict
 
 
 class Messenger(object):
@@ -40,9 +41,9 @@ class Messenger(object):
 class DataManager(object):
     """ Main class to interact with the user. """
 
-    def __init__(self, account_config, args):
+    def __init__(self, args):
 
-        self.account_config = account_config
+        self.account_config = bank_dict[args.type]()
         if args.source_account:
             self.account_config.default_source_account = args.source_account
         if args.target_account:

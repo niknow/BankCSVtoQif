@@ -41,28 +41,27 @@ class MockArgs(object):
         self.target_account = 'Imbalance-EUR'
         self.replacements = None
         self.v = False
+        self.type = 'db_giro'
 
 
 class TestDataManager(unittest.TestCase):
-    def setUp(self):
-        self.account_config = DBGiro()
 
     def test_create_data_manager(self):
-        d = DataManager(self.account_config, MockArgs())
+        d = DataManager(MockArgs())
         self.assertEqual(len(d.transactions), 0)
 
     def test_read_csv(self):
-        d = DataManager(self.account_config, MockArgs())
+        d = DataManager(MockArgs())
         d.read_csv(StringIO())
         self.assertEqual(len(d.transactions), 0)
 
     def test_relabel_transactions(self):
-        d = DataManager(self.account_config, MockArgs())
+        d = DataManager(MockArgs())
         d.read_csv(StringIO())
         self.assertEqual(len(d.transactions), 0)
 
     def test_write_qif(self):
-        d = DataManager(self.account_config, MockArgs())
+        d = DataManager(MockArgs())
         fake_qif = StringIO()
         t = Transaction(
             date=datetime(2015, 5, 1),

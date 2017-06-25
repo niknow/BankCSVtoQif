@@ -28,8 +28,7 @@ from bankcsvtoqif.banks.dkb_giro import DKBGiro
 class TestDKBGiro(unittest.TestCase):
 
     def setUp(self):
-        self.csv = """21.06.2017;21.06.2017;"Kartenzahlung";\
-        "Geschäft";"Ticket";;;"-13,50";;;;"""
+        self.csv = """21.06.2017;;Kartenzahlung;Geschäft;Ticket;;;-13,50;;;;"""
 
     def test_can_instantiate(self):
         account_config = DKBGiro()
@@ -40,8 +39,8 @@ class TestDKBGiro(unittest.TestCase):
         line = csvline_to_line(self.csv, account_config)
         date = datetime(2017, 6, 21)
         description = 'Kartenzahlung Geschäft Ticket'
-        debit = 0
-        credit = -13.5
+        debit = 13.5
+        credit = 0
         self.assertEqual(account_config.get_date(line), date)
         self.assertEqual(account_config.get_description(line), description)
         self.assertEqual(account_config.get_debit(line), debit)

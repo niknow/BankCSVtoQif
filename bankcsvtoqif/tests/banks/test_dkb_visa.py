@@ -28,7 +28,7 @@ from bankcsvtoqif.banks.dkb_visa import DKBVisa
 class TestDKBVisa(unittest.TestCase):
 
     def setUp(self):
-        self.csv = """;;23.06.2017;;;Steuer;"-0,2";;"""
+        self.csv = """;23.06.2017;;Steuer;"-0,2";;"""
 
     def test_can_instantiate(self):
         account_config = DKBVisa()
@@ -39,8 +39,8 @@ class TestDKBVisa(unittest.TestCase):
         line = csvline_to_line(self.csv, account_config)
         date = datetime(2017, 6, 23)
         description = 'Steuer'
-        debit = 0
-        credit = -0.2
+        debit = 0.2
+        credit = 0
         self.assertEqual(account_config.get_date(line), date)
         self.assertEqual(account_config.get_description(line), description)
         self.assertEqual(account_config.get_debit(line), debit)

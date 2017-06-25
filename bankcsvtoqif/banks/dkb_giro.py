@@ -32,19 +32,15 @@ class DKBGiro(BankAccountConfig):
         self.delimiter = ';'
         self.quotechar = '"'
         self.dropped_lines = 7
-        #self.default_source_account = 'Assets:Current Assets:Checking Account'
-        self.default_source_account = 'Assets:Current Assets:Checking DKB (+VISA)'
+        self.default_source_account = 'Assets:Current Assets:Checking Account'
         self.default_target_account = 'Imbalance-EUR'
 
     def get_date(self, line):
         s = line[0].split('.')
         return datetime(int(s[2]), int(s[1]), int(s[0]))
 
-    #def get_description(self, line):
-    #    return line[4]
-
     def get_description(self, line):
-        description = line[3] + ' ' + line[4]
+        description = line[2] + ' ' + line[3] + ' ' + line[4]
         return ' '.join(description.split())
 
     def get_debit(self, line):

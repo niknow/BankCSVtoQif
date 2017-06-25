@@ -29,7 +29,7 @@ class TestDKBGiro(unittest.TestCase):
 
     def setUp(self):
         self.csv = """21.06.2017;21.06.2017;"Kartenzahlung";\
-        "Geschäft";"Ticket";;;"-13,50";;;;""".encode(encoding='windows-1252')
+        "Geschäft";"Ticket";;;"-13,50";;;;"""
 
     def test_can_instantiate(self):
         account_config = DKBGiro()

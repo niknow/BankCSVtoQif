@@ -28,7 +28,7 @@ from bankcsvtoqif.banks.dkb_visa import DKBVisa
 class TestDKBVisa(unittest.TestCase):
 
     def setUp(self):
-        self.csv = """;;23.06.2017;;;Steuer;"-0,2";;""".encode(encoding='windows-1252')
+        self.csv = """;;23.06.2017;;;Steuer;"-0,2";;"""
 
     def test_can_instantiate(self):
         account_config = DKBVisa()

@@ -34,6 +34,21 @@ Installation
 
     python b2q.py -h
 
+Pipenv
+------
+
+* Clone this repo::
+
+    git clone https://github.com/niknow/BankCSVtoQif.git
+
+* Switch into BankCSVtoQif and install the python library::
+
+    cd BankCSVtoQif
+    pipenv install
+
+* Use the command line interface to display help::
+
+    pipenv run python b2q.py -h
 
 Example: Deutsche Bank Checking Account
 ---------------------------------------

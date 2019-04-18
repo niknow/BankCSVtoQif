@@ -39,3 +39,6 @@ class VRBank(BankAccountConfig):
     def get_credit(self, line):
         val = self.get_amount(line[19])
         return val if val >= 0 else 0
+
+    def get_category(self, line):
+        return ''

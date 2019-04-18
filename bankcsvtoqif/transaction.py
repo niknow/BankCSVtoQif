@@ -34,18 +34,20 @@ def consume(iterator, n):
 class Transaction(object):
     """ Represents a transaction obtained from csv-file. """
 
-    def __init__(self, date, description, debit, credit, target_account, source_account='Assets:Current Assets:Checking Account'):
+    def __init__(self, date, description, category, debit, credit, target_account, source_account='Assets:Current Assets:Checking Account'):
         self.date = date
         self.description = description
+        self.category = category
         self.debit = debit
         self.credit = credit
         self.target_account = target_account
         self.source_account = source_account
 
     def __str__(self):
-        return '<Transaction %s, %s, %s, %s, %s>'% (
+        return '<Transaction %s, %s, %s, %s, %s, %s>'% (
             self.date,
             self.description,
+            self.category,
             self.debit,
             self.credit,
             self.target_account
@@ -58,10 +60,11 @@ class Transaction(object):
     def to_qif_line(self):
         return [
             '!Type:Cash',
-            'D' + self.date.strftime('%m/%d/%y'),
+            'D' + self.date.strftime('%m/%d\'%y'),
             'S' + self.target_account,
             'P' + self.description,
-            '$' + '%.2f' % self.amount,
+            'L' + self.category,
+            'T' + '%.2f' % self.amount,
             '^'
         ]
 
@@ -76,6 +79,7 @@ class TransactionFactory(object):
         return Transaction(
             date=self.account_config.get_date(line),
             description=self.account_config.get_description(line),
+            category=self.account_config.get_category(line),
             debit=self.account_config.get_debit(line),
             credit=self.account_config.get_credit(line),
             target_account=self.account_config.get_target_account(line),

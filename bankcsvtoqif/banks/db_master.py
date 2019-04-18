@@ -47,3 +47,6 @@ class DBMaster(BankAccountConfig):
     def get_credit(self, line):
         amount = self.get_amount(line[6])
         return amount if amount >= 0 else 0
+
+    def get_category(self, line):
+        return ''

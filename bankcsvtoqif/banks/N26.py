@@ -30,16 +30,20 @@ class N26(BankAccountConfig):
         self.delimiter = ','
         self.quotechar = '"'
         self.dropped_lines = 5
-        self.default_source_account = 'Assets:Current Assets:Checking Account'
-        self.default_target_account = 'Imbalance-EUR'
+        self.default_source_account = 'Family N26'
+        self.default_target_account = 'Family N26'
 
     def get_date(self, line):
         s = line[0].split('-')
         return datetime(int(s[0]), int(s[1]), int(s[2]))
 
     def get_description(self, line):
-        description = line[1] + ' ' + line[3] + ' ' + line[5]
+        description = line[1] + ' / ' + line[3]
         return ' '.join(description.split())
+
+    def get_category(self, line):
+        category = line[5]
+        return category
 
     def get_debit(self, line):
         val = float(line[6])

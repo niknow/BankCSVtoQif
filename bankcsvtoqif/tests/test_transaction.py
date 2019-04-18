@@ -57,12 +57,14 @@ class TestTransaction(unittest.TestCase):
     def test_create_transaction(self):
         date = datetime(2015, 5, 17)
         description = 'milk'
+        category = ''
         debit = 1.05
         credit = 0
         target_account = 'Expenses:Groceries'
-        transaction = Transaction(date, description, debit, credit, target_account)
+        transaction = Transaction(date, description, category, debit, credit, target_account)
         self.assertEqual(transaction.date, date)
         self.assertEqual(transaction.description, description)
+        self.assertEqual(transaction.category, category)
         self.assertEqual(transaction.debit, debit)
         self.assertEqual(transaction.credit, credit)
         self.assertEqual(transaction.target_account, target_account)
@@ -71,11 +73,12 @@ class TestTransaction(unittest.TestCase):
     def test_to_qif_line(self):
         date = datetime(2015, 5, 17)
         description = 'milk'
+        category = ''
         debit = 1.05
         credit = 0
         target_account = 'Expenses:Groceries'
-        t = Transaction(date, description, debit, credit, target_account)
-        self.assertEqual(len(t.to_qif_line()), 6)
+        t = Transaction(date, description, category, debit, credit, target_account)
+        self.assertEqual(len(t.to_qif_line()), 7)
 
 
 class TestTransactionFactory(unittest.TestCase):
@@ -101,6 +104,7 @@ class TestTransactionFactory(unittest.TestCase):
         transaction = transaction_factory.create_from_line(line)
         self.assertEqual(transaction.date, self.account_config.get_date(line))
         self.assertEqual(transaction.description, self.account_config.get_description(line))
+        self.assertEqual(transaction.category, self.account_config.get_category(line))
         self.assertEqual(transaction.debit, self.account_config.get_debit(line))
         self.assertEqual(transaction.credit, self.account_config.get_credit(line))
         self.assertEqual(transaction.target_account, self.account_config.default_target_account)

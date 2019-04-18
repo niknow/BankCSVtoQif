@@ -38,7 +38,8 @@ class TestN26(unittest.TestCase):
         account_config = N26()
         line = csvline_to_line(self.csv, account_config)
         date = datetime(2018, 12, 24)
-        description = "STARBUCKS MasterCard Payment Bars & Restaurants"
+        description = "STARBUCKS / MasterCard Payment"
+        category = "Bars & Restaurants"
         debit = 20.6
         credit = 0
         self.assertEqual(account_config.get_date(line), date)

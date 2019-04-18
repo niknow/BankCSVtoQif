@@ -47,3 +47,6 @@ class DBGiro(BankAccountConfig):
 
     def get_credit(self, line):
         return self.get_absolute_amount(line[15])
+
+    def get_category(self, line):
+        return ''

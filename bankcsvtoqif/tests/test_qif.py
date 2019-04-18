@@ -37,7 +37,7 @@ class TestQifFile(unittest.TestCase):
         self.assertEqual(q.transactions, ['foo'])
 
     def test_get_raw_data(self):
-        t = Transaction(self.date, self.description, 0, self.amount, 'Expenses:Rent')
+        t = Transaction(self.date, self.description, '', 0, self.amount, 'Expenses:Rent')
         lines = [
             '!Account',
             'N' + self.account,

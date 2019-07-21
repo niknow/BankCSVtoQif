@@ -41,7 +41,7 @@ class TestRabo(unittest.TestCase):
         description = "bc AB ce de 1234 Ueggel XLONDON UK  Betaalautomaat 12:12 pasnr. 012  "
         debit = 2.00
         credit = 0
-        source_account = "NL05RABO1234567890"
+        source_account = "Assets:Current Assets:NL05RABO1234567890"
         self.assertEqual(account_config.get_date(line), date)
         self.assertEqual(account_config.get_description(line), description)
         self.assertEqual(account_config.get_debit(line), debit)

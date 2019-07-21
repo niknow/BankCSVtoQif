@@ -28,7 +28,7 @@ from bankcsvtoqif.banks.rabo import RaboBank
 class TestRabo(unittest.TestCase):
 
     def setUp(self):
-        self.csv = """"NL05RABO1234567890","EUR","20160623","D","123.23","","","20160622","gb","","XXXXXXXXX SXXXXXX \LONDON","Geldautomaat 20:20 pasnr. 015","GBP 120,00 EUR = 0,876543 GBP","","","","","","""""
+        self.csv = """"NL05RABO1234567890","EUR","RABONL2U","000000000000004567","2019-01-14","2019-01-14","-2,00","+2345,67","","AB ce de 1234 Ueggel XLONDON UK","","","","bc","","","","","","Betaalautomaat 12:12 pasnr. 012"," ","","","","","""""
 
     def test_can_instantiate(self):
         account_config = RaboBank()
@@ -37,9 +37,9 @@ class TestRabo(unittest.TestCase):
     def test_getters(self):
         account_config = RaboBank()
         line = csvline_to_line(self.csv, account_config)
-        date = datetime(2016, 6, 23)
-        description = "XXXXXXXXX SXXXXXX \LONDON Geldautomaat 20:20 pasnr. 015"
-        debit = 123.23
+        date = datetime(2019, 1, 14)
+        description = "bc AB ce de 1234 Ueggel XLONDON UK  Betaalautomaat 12:12 pasnr. 012"
+        debit = 2.00
         credit = 0
         source_account = "NL05RABO1234567890"
         self.assertEqual(account_config.get_date(line), date)

@@ -38,7 +38,7 @@ class TestRabo(unittest.TestCase):
         account_config = RaboBank()
         line = csvline_to_line(self.csv, account_config)
         date = datetime(2019, 1, 14)
-        description = "bc AB ce de 1234 Ueggel XLONDON UK  Betaalautomaat 12:12 pasnr. 012"
+        description = "bc AB ce de 1234 Ueggel XLONDON UK  Betaalautomaat 12:12 pasnr. 012  "
         debit = 2.00
         credit = 0
         source_account = "NL05RABO1234567890"

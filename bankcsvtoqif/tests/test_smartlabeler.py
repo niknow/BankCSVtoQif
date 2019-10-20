@@ -81,7 +81,7 @@ class TestReplacement(unittest.TestCase):
 
 class TestSmartLabeler(unittest.TestCase):
     def setUp(self):
-        self.transaction = Transaction(datetime(2015, 5, 1), 'RentXYZ234 3848267', 500, 0, 'Imbalance-EUR')
+        self.transaction = Transaction(datetime(2015, 5, 1), 'RentXYZ234 3848267', '', 500, 0, 'Imbalance-EUR')
         self.replacement1 = Replacement('Rent', 'Rent', 'Expenses:Rent', 0)
         self.replacement2 = Replacement('Rent', '', 'Expenses:Rent', 0)
         self.SmartLabeler = SmartLabeler()
@@ -111,9 +111,9 @@ class TestSmartLabeler(unittest.TestCase):
         self.SmartLabeler.replacements.append(Replacement('no123', 'Rent', 'Expenses:Rent', 0))
         self.SmartLabeler.replacements.append(Replacement('RentXYZ', '', 'Expenses:Rent', 0))
         transactions = [
-            Transaction(datetime(2015, 5, 1), 'no123 3848267', 500, 0, 'Imbalance-EUR'),
-            Transaction(datetime(2015, 5, 2), 'RentXYZ 3848267', 0, 500, 'Imbalance-EUR'),
-            Transaction(datetime(2015, 5, 3), 'foobarbar', 500, 0, 'Imbalance-EUR'),
+            Transaction(datetime(2015, 5, 1), 'no123 3848267', '', 500, 0, 'Imbalance-EUR'),
+            Transaction(datetime(2015, 5, 2), 'RentXYZ 3848267', '', 0, 500, 'Imbalance-EUR'),
+            Transaction(datetime(2015, 5, 3), 'foobarbar', '', 500, 0, 'Imbalance-EUR'),
         ]
         self.SmartLabeler.run_replacements(transactions, Messenger(False))
         self.assertEqual(transactions[0].description, 'Rent')

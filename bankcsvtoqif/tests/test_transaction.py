@@ -22,6 +22,7 @@
 import unittest
 from datetime import datetime
 import csv
+
 from bankcsvtoqif.io import Messenger
 
 try:
@@ -30,7 +31,7 @@ except ImportError:
     from io import StringIO
 
 from bankcsvtoqif.tests.banks import csvline_to_line
-from bankcsvtoqif.transaction import Transaction, TransactionFactory
+from bankcsvtoqif.transaction import Transaction, TransactionFactory, TransactionType
 from bankcsvtoqif.banks.db_giro import DBGiro
 
 csv_test_file = [
@@ -68,14 +69,83 @@ class TestTransaction(unittest.TestCase):
         self.assertEqual(transaction.target_account, target_account)
         self.assertEqual(transaction.amount, credit - debit)
 
-    def test_to_qif_line(self):
-        date = datetime(2015, 5, 17)
-        description = 'milk'
-        debit = 1.05
-        credit = 0
-        target_account = 'Expenses:Groceries'
-        t = Transaction(date, description, debit, credit, target_account)
-        self.assertEqual(len(t.to_qif_line()), 6)
+    def test_to_qif_line_debit(self):
+        self.assertEqual(
+            Transaction(
+                date=datetime(2015, 5, 6),
+                description="milk",
+                debit=1.05,
+                credit=0,
+                target_account="Expenses:Groceries",
+            ).to_qif_line(),
+            [
+                '!Type:Cash',
+                'D05/06/15',
+                'SExpenses:Groceries',
+                'Pmilk',
+                '$-1.05',
+                '^'
+            ]
+        )
+
+    def test_to_qif_line_credit(self):
+        self.assertEqual(
+            Transaction(
+                date=datetime(2015, 4, 25),
+                description="monthly salary",
+                debit=0,
+                credit=3000.00,
+                target_account="Income:Salary",
+            ).to_qif_line(),
+            [
+                '!Type:Cash',
+                'D04/25/15',
+                'SIncome:Salary',
+                'Pmonthly salary',
+                '$3000.00',
+                '^'
+            ]
+        )
+
+    def test_to_qif_line_credit_card_credit(self):
+        self.assertEqual(
+            Transaction(
+                date=datetime(2016, 2, 3),
+                description="jeans",
+                debit=0,
+                credit=74.99,
+                target_account="Expenses:Clothes",
+                transaction_type=TransactionType.CREDIT_CARD,
+            ).to_qif_line(),
+            [
+                '!Type:CCard',
+                'D02/03/16',
+                'SExpenses:Clothes',
+                'Pjeans',
+                '$-74.99',
+                '^'
+            ]
+        )
+
+    def test_to_qif_line_credit_card_debit(self):
+        self.assertEqual(
+            Transaction(
+                date=datetime(2016, 11, 25),
+                description="pay off credit card",
+                debit=200.00,
+                credit=0,
+                target_account="Assets:Current Assets:Checking Account",
+                transaction_type=TransactionType.CREDIT_CARD,
+            ).to_qif_line(),
+            [
+                '!Type:CCard',
+                'D11/25/16',
+                'SAssets:Current Assets:Checking Account',
+                'Ppay off credit card',
+                '$200.00',
+                '^'
+            ]
+        )
 
 
 class TestTransactionFactory(unittest.TestCase):
@@ -103,7 +173,8 @@ class TestTransactionFactory(unittest.TestCase):
         self.assertEqual(transaction.description, self.account_config.get_description(line))
         self.assertEqual(transaction.debit, self.account_config.get_debit(line))
         self.assertEqual(transaction.credit, self.account_config.get_credit(line))
-        self.assertEqual(transaction.target_account, self.account_config.default_target_account)
+        self.assertEqual(transaction.target_account, self.account_config.get_target_account(line))
+        self.assertEqual(transaction.transaction_type, self.account_config.get_transaction_type(line))
 
     def test_read_from_file(self):
         fake_csv_file = self.write_fake_csv()

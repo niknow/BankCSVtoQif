@@ -43,7 +43,7 @@ class Orico(BankAccountConfig):
         return datetime.strptime(line[0], "%Y年%m月%d日")
 
     def get_description(self, line):
-        return line[1]
+        return "{}（{}）".format(line[1], line[3])
 
     def get_amount(self, amount):
         amount = self.amount_sanitization_regex.sub("", amount)

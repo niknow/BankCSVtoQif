@@ -39,7 +39,7 @@ class TestOrico(unittest.TestCase):
         account_config = Orico()
         line = csvline_to_line(self.csv, account_config)
         date = datetime(2021, 3, 1)
-        description = 'This is a debit テスト'
+        description = 'This is a debit テスト（家族）'
         debit = 4000
         credit = 0
         self.assertEqual(account_config.get_date(line), date)
@@ -51,7 +51,7 @@ class TestOrico(unittest.TestCase):
         account_config = Orico()
         line = csvline_to_line(self.csv2, account_config)
         date = datetime(2021, 3, 10)
-        description = 'This is a credit テスト'
+        description = 'This is a credit テスト（本人）'
         debit = 0
         credit = 5000
         self.assertEqual(account_config.get_date(line), date)

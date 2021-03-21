@@ -1,0 +1,10 @@
+;
+"Umsätze Visa-Karte (Kreditkarte) ";"Zeitraum: 180 Tage";
+"Neuer Kontostand";"00,00 EUR";
+
+"Buchungstag";"Umsatztag";"Vorgang";"Referenz";"Buchungstext";"Umsatz in EUR";
+"01.04.2019";"17.04.2019";"Visa-Umsatz";"123456789";"some debit";"-83,00";
+"02.04.2019";"18.11.2018";"Visa-Umsatz";"123456789";"some credit";"123,45";
+
+
+

@@ -18,45 +18,35 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import unittest
 from datetime import datetime
-from bankcsvtoqif.tests.banks import csvline_to_line
 
 from bankcsvtoqif.banks.comdirect_visa import ComdirectVisa
+from bankcsvtoqif.tests.banks import TestBankAccountConfig
+from bankcsvtoqif.transaction import Transaction
 
 
-class TestComdirectVisa(unittest.TestCase):
-
-    def setUp(self):
-        self.csv  = """"01.04.2019";"17.04.2019";"Visa-Umsatz";"123456789";"some debit";"-83,00";"""
-        self.csv2 = """"02.04.2019";"18.11.2018";"Visa-Umsatz";"123456789";"some credit";"123,45";"""
-
-    def test_can_instantiate(self):
+class TestComdirectVisa(TestBankAccountConfig):
+    def testParse(self):
         account_config = ComdirectVisa()
-        self.assertEqual(type(account_config), ComdirectVisa)
-
-    def test_debit(self):
-        account_config = ComdirectVisa()
-        line = csvline_to_line(self.csv, account_config)
-        date = datetime(2019, 4, 17)
-        description = 'some debit'
-        debit = 83.0
-        credit = 0
-        all_lines = (line, line)
-        self.assertEqual(account_config.get_date(line, all_lines), date)
-        self.assertEqual(account_config.get_description(line, all_lines), description)
-        self.assertEqual(account_config.get_debit(line, all_lines), debit)
-        self.assertEqual(account_config.get_credit(line, all_lines), credit)
-
-    def test_credit(self):
-        account_config = ComdirectVisa()
-        line = csvline_to_line(self.csv2, account_config)
-        date = datetime(2018, 11, 18)
-        description = 'some credit'
-        debit = 0
-        credit = 123.45
-        all_lines = (line, line)
-        self.assertEqual(account_config.get_date(line, all_lines), date)
-        self.assertEqual(account_config.get_description(line, all_lines), description)
-        self.assertEqual(account_config.get_debit(line, all_lines), debit)
-        self.assertEqual(account_config.get_credit(line, all_lines), credit)
+        self.assert_csv_parsed_as(
+            "comdirect_visa.csv",
+            account_config,
+            [
+                Transaction(
+                    date=datetime(2019, 4, 17),
+                    description='some debit',
+                    debit=83.00,
+                    credit=0,
+                    source_account=account_config.default_source_account,
+                    target_account=account_config.default_target_account,
+                ),
+                Transaction(
+                    date=datetime(2018, 11, 18),
+                    description='some credit',
+                    debit=0,
+                    credit=123.45,
+                    source_account=account_config.default_source_account,
+                    target_account=account_config.default_target_account,
+                ),
+            ]
+        )

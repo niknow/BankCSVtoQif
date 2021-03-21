@@ -42,10 +42,11 @@ class TestMetro(unittest.TestCase):
         description = 'Savings account'
         debit = 12.34
         credit = 0
-        self.assertEqual(account_config.get_date(line), date)
-        self.assertEqual(account_config.get_description(line), description)
-        self.assertEqual(account_config.get_debit(line), debit)
-        self.assertEqual(account_config.get_credit(line), credit)
+        all_lines = (line, line)
+        self.assertEqual(account_config.get_date(line, all_lines), date)
+        self.assertEqual(account_config.get_description(line, all_lines), description)
+        self.assertEqual(account_config.get_debit(line, all_lines), debit)
+        self.assertEqual(account_config.get_credit(line, all_lines), credit)
 
     def test_credit(self):
         account_config = Metro()
@@ -54,7 +55,8 @@ class TestMetro(unittest.TestCase):
         description = 'Acme Ltd Pay'
         debit = 0
         credit = 1000.00
-        self.assertEqual(account_config.get_date(line), date)
-        self.assertEqual(account_config.get_description(line), description)
-        self.assertEqual(account_config.get_debit(line), debit)
-        self.assertEqual(account_config.get_credit(line), credit)
+        all_lines = (line, line)
+        self.assertEqual(account_config.get_date(line, all_lines), date)
+        self.assertEqual(account_config.get_description(line, all_lines), description)
+        self.assertEqual(account_config.get_debit(line, all_lines), debit)
+        self.assertEqual(account_config.get_credit(line, all_lines), credit)

@@ -34,15 +34,15 @@ class Metro(BankAccountConfig):
         self.default_source_account = 'Assets:Current Assets:Checking Account'
         self.default_target_account = 'Imbalance-GBP'
 
-    def get_date(self, line):
+    def get_date(self, line, all_lines):
         s = line[0].split('/')
         return datetime(int(s[2]), int(s[1]), int(s[0]))
 
-    def get_description(self, line):
+    def get_description(self, line, all_lines):
         return line[1]
 
-    def get_debit(self, line):
+    def get_debit(self, line, all_lines):
         return float(line[4]) if line[4] else 0
 
-    def get_credit(self, line):
+    def get_credit(self, line, all_lines):
         return float(line[3]) if line[3] else 0

@@ -36,17 +36,17 @@ class Swedbank(BankAccountConfig):
         self.default_target_account = 'Imbalance-SEK'
         self.encoding = 'utf-8-sig'
 
-    def get_date(self, line):
+    def get_date(self, line, all_lines):
         s = line[2].split('-')
         return datetime(int(s[0]), int(s[1]), int(s[2]))
 
-    def get_description(self, line):
+    def get_description(self, line, all_lines):
         return line[0]
 
-    def get_debit(self, line):
+    def get_debit(self, line, all_lines):
         amount = self.get_amount(line[3])
         return -amount if amount <= 0 else 0
 
-    def get_credit(self, line):
+    def get_credit(self, line, all_lines):
         amount = self.get_amount(line[3])
         return amount if amount >= 0 else 0

@@ -35,18 +35,18 @@ class DKBVisa(BankAccountConfig):
         self.default_source_account = 'Assets:Current Assets:Checking Account'
         self.default_target_account = 'Imbalance-EUR'
 
-    def get_date(self, line):
+    def get_date(self, line, all_lines):
         s = line[1].split('.')
         return datetime(int(s[2]), int(s[1]), int(s[0]))
 
-    def get_description(self, line):
+    def get_description(self, line, all_lines):
         description = line[3]
         return ' '.join(description.split())
 
-    def get_debit(self, line):
+    def get_debit(self, line, all_lines):
         val = self.get_amount(line[4])
         return -val if val < 0 else 0
 
-    def get_credit(self, line):
+    def get_credit(self, line, all_lines):
         val = self.get_amount(line[4])
         return val if val >= 0 else 0

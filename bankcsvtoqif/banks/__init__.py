@@ -29,6 +29,7 @@ class BankAccountConfig(object):
     """
 
     __metaclass__ = ABCMeta
+    encoding = "utf_8"
 
     def __init__(self):
         self.delimiter = None

@@ -21,6 +21,8 @@
 from abc import ABCMeta, abstractmethod
 import csv
 
+from bankcsvtoqif.transaction import TransactionType
+
 
 class BankAccountConfig(object):
     """ Abstract class. Stores the configuration data to parse the csv from a specific account.
@@ -29,6 +31,8 @@ class BankAccountConfig(object):
     """
 
     __metaclass__ = ABCMeta
+
+    transaction_type = TransactionType.CASH
 
     def __init__(self):
         self.delimiter = None
@@ -108,6 +112,15 @@ class BankAccountConfig(object):
         to parse the source account.
         :param line: #of csv
         :return: source account of a transaction
-
         """
         return self.default_source_account
+
+    def get_transaction_type(self, line):
+        """
+        This function can be overloaded for banks whose csv format
+        contains transactions from multiple accounts, where the accounts
+        have different transaction types.
+        :param line: #of csv
+        :return: transaction type
+        """
+        return self.transaction_type

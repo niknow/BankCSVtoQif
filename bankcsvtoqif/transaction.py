@@ -20,7 +20,15 @@
 
 import collections
 import csv
+from enum import Enum, auto
 from itertools import islice
+
+
+class TransactionType(Enum):
+    CASH = auto()
+    BANK = auto()
+    CREDIT_CARD = auto()
+    INVESTMENT = auto()
 
 
 def consume(iterator, n):
@@ -34,13 +42,30 @@ def consume(iterator, n):
 class Transaction(object):
     """ Represents a transaction obtained from csv-file. """
 
-    def __init__(self, date, description, debit, credit, target_account, source_account='Assets:Current Assets:Checking Account'):
+    qif_record_types = {
+        TransactionType.CASH: "Cash",
+        TransactionType.BANK: "Bank",
+        TransactionType.CREDIT_CARD: "CCard",
+        TransactionType.INVESTMENT: "Invst",
+    }
+
+    def __init__(
+            self,
+            date,
+            description,
+            debit,
+            credit,
+            target_account,
+            source_account='Assets:Current Assets:Checking Account',
+            transaction_type=TransactionType.CASH,
+    ):
         self.date = date
         self.description = description
         self.debit = debit
         self.credit = credit
         self.target_account = target_account
         self.source_account = source_account
+        self.transaction_type = transaction_type
 
     def __str__(self):
         return '<Transaction %s, %s, %s, %s, %s>'% (
@@ -53,11 +78,26 @@ class Transaction(object):
 
     @property
     def amount(self):
-        return self.credit - self.debit
+        if self.is_liability():
+            return self.debit - self.credit
+        else:
+            return self.credit - self.debit
+
+    @property
+    def qif_record_type(self):
+        try:
+            return self.qif_record_types[self.transaction_type]
+        except KeyError:
+            raise ValueError(
+                "Unknown transaction type: {}".format(self.transaction_type)
+            )
+
+    def is_liability(self):
+        return self.transaction_type is TransactionType.CREDIT_CARD
 
     def to_qif_line(self):
         return [
-            '!Type:Cash',
+            '!Type:' + self.qif_record_type,
             'D' + self.date.strftime('%m/%d/%y'),
             'S' + self.target_account,
             'P' + self.description,
@@ -79,7 +119,8 @@ class TransactionFactory(object):
             debit=self.account_config.get_debit(line),
             credit=self.account_config.get_credit(line),
             target_account=self.account_config.get_target_account(line),
-            source_account=self.account_config.get_source_account(line)
+            source_account=self.account_config.get_source_account(line),
+            transaction_type=self.account_config.get_transaction_type(line),
         )
 
     def read_from_file(self, f, messenger):

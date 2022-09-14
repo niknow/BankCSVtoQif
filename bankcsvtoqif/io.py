@@ -77,10 +77,7 @@ class DataManager(object):
             self.messenger.send_message(transaction)
 
     def csv_to_qif(self):
-        try:
-            f = open(self.csv_filename, encoding=self.account_config.encoding)
-        except AttributeError:
-            f = open(self.csv_filename)
+        f = open(self.csv_filename, encoding=self.account_config.encoding)
         self.read_csv(f)
         f.close()
         if self.replacements_file:

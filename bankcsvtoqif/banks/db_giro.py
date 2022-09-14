@@ -34,16 +34,16 @@ class DBGiro(BankAccountConfig):
         self.default_source_account = 'Assets:Current Assets:Checking Account'
         self.default_target_account = 'Imbalance-EUR'
 
-    def get_date(self, line):
+    def get_date(self, line, all_lines):
         s = line[0].split('.')
         return datetime(int(s[2]), int(s[1]), int(s[0]))
 
-    def get_description(self, line):
+    def get_description(self, line, all_lines):
         description = line[2] + ' ' + line[3] + ' ' + line[4]
         return ' '.join(description.split())
 
-    def get_debit(self, line):
+    def get_debit(self, line, all_lines):
         return self.get_absolute_amount(line[14])
 
-    def get_credit(self, line):
+    def get_credit(self, line, all_lines):
         return self.get_absolute_amount(line[15])

@@ -42,8 +42,9 @@ class TestRabo(unittest.TestCase):
         debit = 2.00
         credit = 0
         source_account = "Assets:Current Assets:NL05RABO1234567890"
-        self.assertEqual(account_config.get_date(line), date)
-        self.assertEqual(account_config.get_description(line), description)
-        self.assertEqual(account_config.get_debit(line), debit)
-        self.assertEqual(account_config.get_credit(line), credit)
-        self.assertEqual(account_config.get_source_account(line), source_account)
+        all_lines = (line, line)
+        self.assertEqual(account_config.get_date(line, all_lines), date)
+        self.assertEqual(account_config.get_description(line, all_lines), description)
+        self.assertEqual(account_config.get_debit(line, all_lines), debit)
+        self.assertEqual(account_config.get_credit(line, all_lines), credit)
+        self.assertEqual(account_config.get_source_account(line, all_lines), source_account)

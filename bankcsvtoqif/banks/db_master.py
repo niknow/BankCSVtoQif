@@ -33,17 +33,17 @@ class DBMaster(BankAccountConfig):
         self.default_source_account = 'Liabilities:Deutsche Bank Master Card'
         self.default_target_account = 'Imbalance-EUR'
 
-    def get_date(self, line):
+    def get_date(self, line, all_lines):
         s = line[0].split('.')
         return datetime(int(s[2]), int(s[1]), int(s[0]))
 
-    def get_description(self, line):
+    def get_description(self, line, all_lines):
         return line[2]
 
-    def get_debit(self, line):
+    def get_debit(self, line, all_lines):
         amount = self.get_amount(line[6])
         return -amount if amount <= 0 else 0
 
-    def get_credit(self, line):
+    def get_credit(self, line, all_lines):
         amount = self.get_amount(line[6])
         return amount if amount >= 0 else 0

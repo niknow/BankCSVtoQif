@@ -18,43 +18,43 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import unittest
 from datetime import datetime
 
 from bankcsvtoqif.banks.swedbank import Swedbank
-from bankcsvtoqif.tests.banks import csvline_to_line
+from bankcsvtoqif.tests.banks import TestBankAccountConfig
+from bankcsvtoqif.transaction import Transaction
 
 
-class TestSwedbank(unittest.TestCase):
-
-    def setUp(self):
-        self.csv = """This is a debit;2018-08-31;2018-08-31;-2 135,00;42 904,75"""
-        self.csv2 = """This is a credit;2018-08-30;2018-08-31;395,00;43 299,75"""
-
-    def test_can_instantiate(self):
+class TestSwedbank(TestBankAccountConfig):
+    def testParse(self):
         account_config = Swedbank()
-        self.assertEqual(type(account_config), Swedbank)
-
-    def test_debit(self):
-        account_config = Swedbank()
-        line = csvline_to_line(self.csv, account_config)
-        date = datetime(2018, 8, 31)
-        description = 'This is a debit'
-        debit = 2135.00
-        credit = 0
-        self.assertEqual(account_config.get_date(line), date)
-        self.assertEqual(account_config.get_description(line), description)
-        self.assertEqual(account_config.get_debit(line), debit)
-        self.assertEqual(account_config.get_credit(line), credit)
-
-    def test_credit(self):
-        account_config = Swedbank()
-        line = csvline_to_line(self.csv2, account_config)
-        date = datetime(2018, 8, 31)
-        description = 'This is a credit'
-        debit = 0
-        credit = 395.00
-        self.assertEqual(account_config.get_date(line), date)
-        self.assertEqual(account_config.get_description(line), description)
-        self.assertEqual(account_config.get_debit(line), debit)
-        self.assertEqual(account_config.get_credit(line), credit)
+        self.assert_csv_parsed_as(
+            "swedbank.csv",
+            account_config,
+            [
+                Transaction(
+                    date=datetime(2018, 8, 31),
+                    description="A transaction",
+                    debit=395.00,
+                    credit=0,
+                    source_account=account_config.default_source_account,
+                    target_account=account_config.default_target_account,
+                ),
+                Transaction(
+                    date=datetime(2018, 8, 31),
+                    description="This is a credit",
+                    debit=0,
+                    credit=395.00,
+                    source_account=account_config.default_source_account,
+                    target_account=account_config.default_target_account,
+                ),
+                Transaction(
+                    date=datetime(2018, 8, 31),
+                    description="This is a debit",
+                    debit=2135.00,
+                    credit=0,
+                    source_account=account_config.default_source_account,
+                    target_account=account_config.default_target_account,
+                ),
+            ]
+        )

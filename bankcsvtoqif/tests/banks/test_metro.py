@@ -18,43 +18,35 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import unittest
 from datetime import datetime
-from bankcsvtoqif.tests.banks import csvline_to_line
 
 from bankcsvtoqif.banks.metro import Metro
+from bankcsvtoqif.tests.banks import TestBankAccountConfig
+from bankcsvtoqif.transaction import Transaction
 
 
-class TestMetro(unittest.TestCase):
-
-    def setUp(self):
-        self.csv = """26/01/2018,Savings account,Outward Faster Payment,0.00,12.34,56.78"""
-        self.csv2 = """26/01/2018,Acme Ltd Pay,Inward Payment,1000.00,0.00,1056.78.00"""
-
-    def test_can_instantiate(self):
+class TestMetro(TestBankAccountConfig):
+    def testParse(self):
         account_config = Metro()
-        self.assertEqual(type(account_config), Metro)
-
-    def test_debit(self):
-        account_config = Metro()
-        line = csvline_to_line(self.csv, account_config)
-        date = datetime(2018, 1, 26)
-        description = 'Savings account'
-        debit = 12.34
-        credit = 0
-        self.assertEqual(account_config.get_date(line), date)
-        self.assertEqual(account_config.get_description(line), description)
-        self.assertEqual(account_config.get_debit(line), debit)
-        self.assertEqual(account_config.get_credit(line), credit)
-
-    def test_credit(self):
-        account_config = Metro()
-        line = csvline_to_line(self.csv2, account_config)
-        date = datetime(2018, 1, 26)
-        description = 'Acme Ltd Pay'
-        debit = 0
-        credit = 1000.00
-        self.assertEqual(account_config.get_date(line), date)
-        self.assertEqual(account_config.get_description(line), description)
-        self.assertEqual(account_config.get_debit(line), debit)
-        self.assertEqual(account_config.get_credit(line), credit)
+        self.assert_csv_parsed_as(
+            "metro.csv",
+            account_config,
+            [
+                Transaction(
+                    date=datetime(2018, 1, 26),
+                    description='Savings account',
+                    debit=12.34,
+                    credit=0,
+                    source_account=account_config.default_source_account,
+                    target_account=account_config.default_target_account,
+                ),
+                Transaction(
+                    date=datetime(2018, 1, 26),
+                    description='Acme Ltd Pay',
+                    debit=0,
+                    credit=1000.00,
+                    source_account=account_config.default_source_account,
+                    target_account=account_config.default_target_account,
+                ),
+            ]
+        )

@@ -41,7 +41,8 @@ class TestDKBGiro(unittest.TestCase):
         description = 'Kartenzahlung Geschäft Ticket'
         debit = 13.5
         credit = 0
-        self.assertEqual(account_config.get_date(line), date)
-        self.assertEqual(account_config.get_description(line), description)
-        self.assertEqual(account_config.get_debit(line), debit)
-        self.assertEqual(account_config.get_credit(line), credit)
+        all_lines = (line, line)
+        self.assertEqual(account_config.get_date(line, all_lines), date)
+        self.assertEqual(account_config.get_description(line, all_lines), description)
+        self.assertEqual(account_config.get_debit(line, all_lines), debit)
+        self.assertEqual(account_config.get_credit(line, all_lines), credit)

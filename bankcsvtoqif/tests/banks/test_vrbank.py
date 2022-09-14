@@ -32,7 +32,9 @@ class TestVRBank(unittest.TestCase):
         pass
 
     def test_extract_correct_fields(self):
-        transaction = (TransactionFactory(self.d)).create_from_line(self.get_fixture_line())
+        line = self.get_fixture_line()
+        all_lines = [line, line]
+        transaction = (TransactionFactory(self.d)).create_from_csv_data(line, all_lines)
 
         self.assertIsNotNone(transaction.date)
         self.assertEqual('2015-05-22T00:00:00', transaction.date.isoformat())

@@ -25,17 +25,17 @@ from datetime import datetime
 class VRBank(BankAccountConfig):
     """ VR-Bank Girokonto """
 
-    def get_date(self, line):
+    def get_date(self, line, all_lines):
         (day, month, year) = map(int, line[1].split('.'))
         return datetime(year, month, day)
 
-    def get_description(self, line):
+    def get_description(self, line, all_lines):
         return ' '.join(line[3:19])
 
-    def get_debit(self, line):
+    def get_debit(self, line, all_lines):
         val = self.get_amount(line[19])
         return -val if val < 0 else 0
 
-    def get_credit(self, line):
+    def get_credit(self, line, all_lines):
         val = self.get_amount(line[19])
         return val if val >= 0 else 0

@@ -29,6 +29,7 @@ class BankAccountConfig(object):
     """
 
     __metaclass__ = ABCMeta
+    encoding = "utf_8"
 
     def __init__(self):
         self.delimiter = None
@@ -61,52 +62,58 @@ class BankAccountConfig(object):
         return d
 
     @abstractmethod
-    def get_date(self, line):
+    def get_date(self, line, all_lines):
         """
         :param line: #of csv
+        :param all_lines: all lines in the csv
         :return:  date of transaction as datetime
         """
         pass
 
     @abstractmethod
-    def get_description(self, line):
+    def get_description(self, line, all_lines):
         """
         :param line: #of csv
+        :param all_lines: all lines in the csv
         :return: description of transaction as string
         """
         pass
 
     @abstractmethod
-    def get_debit(self, line):
+    def get_debit(self, line, all_lines):
         """
         :param line: #of csv
+        :param all_lines: all lines in the csv
         :return: debit of transaction as a non-negative float
         """
         pass
 
     @abstractmethod
-    def get_credit(self, line):
+    def get_credit(self, line, all_lines):
         """
         :param line: #of csv
+        :param all_lines: all lines in the csv
         :return: credit of transaction as non-negative float
         """
         pass
 
-    def get_target_account(self, line):
+    def get_target_account(self, line, all_lines):
         """
         This function can be overloaded for banks whose csv format
         already contains the target account.
         :param line: #of csv
+        :param all_lines: all lines in the csv
         :return: target account of a transaction
         """
         return self.default_target_account
 
-    def get_source_account(self, line):
+    def get_source_account(self, line, all_lines):
         """
         This function can be overloaded for banks whose csv format
         contains transactions from multiple accounts making it neccessary
         to parse the source account.
         :param line: #of csv
+        :param all_lines: all lines in the csv
         :return: source account of a transaction
 
         """

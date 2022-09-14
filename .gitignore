@@ -1,6 +1,6 @@
 myexamples
 reps.ini
-*.csv
+/*.csv
 *.qif
 venv/
 

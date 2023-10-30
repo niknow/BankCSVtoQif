@@ -22,28 +22,39 @@ import unittest
 from datetime import datetime
 from bankcsvtoqif.tests.banks import csvline_to_line
 
-from bankcsvtoqif.banks.rabo import RaboBank
+from bankcsvtoqif.banks.comdirect_visa import ComdirectVisa
 
 
-class TestRabo(unittest.TestCase):
+class TestComdirectVisa(unittest.TestCase):
 
     def setUp(self):
-        self.csv = """"NL05RABO1234567890","EUR","RABONL2U","000000000000004567","2019-01-14","2019-01-14","-2,00","+2345,67","","AB ce de 1234 Ueggel XLONDON UK","","","","bc","","","","","","Betaalautomaat 12:12 pasnr. 012"," ","","","","","""""
+        self.csv  = """"01.04.2019";"17.04.2019";"Visa-Umsatz";"123456789";"some debit";"-83,00";"""
+        self.csv2 = """"02.04.2019";"18.11.2018";"Visa-Umsatz";"123456789";"some credit";"123,45";"""
 
     def test_can_instantiate(self):
-        account_config = RaboBank()
-        self.assertEqual(type(account_config), RaboBank)
+        account_config = ComdirectVisa()
+        self.assertEqual(type(account_config), ComdirectVisa)
 
-    def test_getters(self):
-        account_config = RaboBank()
+    def test_debit(self):
+        account_config = ComdirectVisa()
         line = csvline_to_line(self.csv, account_config)
-        date = datetime(2019, 1, 14)
-        description = "bc AB ce de 1234 Ueggel XLONDON UK  Betaalautomaat 12:12 pasnr. 012  "
-        debit = 2.00
+        date = datetime(2019, 4, 17)
+        description = 'some debit'
+        debit = 83.0
         credit = 0
-        source_account = "Assets:Current Assets:NL05RABO1234567890"
         self.assertEqual(account_config.get_date(line), date)
         self.assertEqual(account_config.get_description(line), description)
         self.assertEqual(account_config.get_debit(line), debit)
         self.assertEqual(account_config.get_credit(line), credit)
-        self.assertEqual(account_config.get_source_account(line), source_account)
+
+    def test_credit(self):
+        account_config = ComdirectVisa()
+        line = csvline_to_line(self.csv2, account_config)
+        date = datetime(2018, 11, 18)
+        description = 'some credit'
+        debit = 0
+        credit = 123.45
+        self.assertEqual(account_config.get_date(line), date)
+        self.assertEqual(account_config.get_description(line), description)
+        self.assertEqual(account_config.get_debit(line), debit)
+        self.assertEqual(account_config.get_credit(line), credit)

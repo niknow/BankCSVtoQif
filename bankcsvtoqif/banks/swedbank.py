@@ -18,45 +18,35 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-
-from bankcsvtoqif.banks import BankAccountConfig
 from datetime import datetime
 
+from bankcsvtoqif.banks import BankAccountConfig
 
-class RaboBank(BankAccountConfig):
-    """ Rabo bank current account """
+
+class Swedbank(BankAccountConfig):
+    """ Swedbank bank """
 
     def __init__(self):
         BankAccountConfig.__init__(self)
 
-        self.encoding = 'windows-1252'
-        self.delimiter = ','
+        self.delimiter = ';'
         self.quotechar = '"'
-        self.dropped_lines = 1
-        self.source_account_prefix = 'Assets:Current Assets'
-        self.default_target_account = 'Imbalance-EUR'
+        self.dropped_lines = 0
+        self.default_source_account = 'Assets:Current Assets:Checking Account'
+        self.default_target_account = 'Imbalance-SEK'
+        self.encoding = 'utf-8-sig'
 
     def get_date(self, line):
-
-        """ line[4] "Datum" is processing date for consumers,
-        but the booking date for professional customers.
-        Using line[5] "Rentedatum" for now. """
-
-        s = line[5]
-        return datetime(int(s[0:4]), int(s[5:7]), int(s[8:10]))
+        s = line[2].split('-')
+        return datetime(int(s[0]), int(s[1]), int(s[2]))
 
     def get_description(self, line):
-        description = (line[13],line[9],line[8],line[19],line[24],line[23])
-        return ' '.join(description)
+        return line[0]
 
     def get_debit(self, line):
-        amount = self.get_amount(line[6])
+        amount = self.get_amount(line[3])
         return -amount if amount <= 0 else 0
 
     def get_credit(self, line):
-        amount = self.get_amount(line[6])
+        amount = self.get_amount(line[3])
         return amount if amount >= 0 else 0
-
-    def get_source_account(self, line):
-        source_account = (self.source_account_prefix, line[0])
-        return ':'.join(source_account)

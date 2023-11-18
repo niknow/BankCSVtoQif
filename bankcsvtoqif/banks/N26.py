@@ -34,7 +34,7 @@ class N26(BankAccountConfig):
         self.default_target_account = 'Family N26'
 
     def get_date(self, line):
-        s = line[0].split('/')
+        s = line[0].split('-')
         return datetime(int(s[0]), int(s[1]), int(s[2]))
 
     def get_description(self, line):

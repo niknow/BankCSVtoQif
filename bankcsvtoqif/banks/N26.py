@@ -29,16 +29,16 @@ class N26(BankAccountConfig):
         BankAccountConfig.__init__(self)
         self.delimiter = ','
         self.quotechar = '"'
-        self.dropped_lines = 5
+        self.dropped_lines = 1
         self.default_source_account = 'Family N26'
         self.default_target_account = 'Family N26'
 
     def get_date(self, line):
-        s = line[0].split('-')
+        s = line[0].split('/')
         return datetime(int(s[0]), int(s[1]), int(s[2]))
 
     def get_description(self, line):
-        description = line[1] + ' / ' + line[3]
+        description = line[1]
         return ' '.join(description.split())
 
     def get_category(self, line):

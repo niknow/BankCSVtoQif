@@ -22,25 +22,25 @@ import unittest
 from datetime import datetime
 from bankcsvtoqif.tests.banks import csvline_to_line
 
-from bankcsvtoqif.banks.CCM import CCM
+from bankcsvtoqif.banks.Unicaja import Unicaja
 
 
-class TestCCM(unittest.TestCase):
+class TestUnicaja(unittest.TestCase):
 
     def setUp(self):
-        self.csv = """26-01-2019,56 MAKRO TOLED/OL,23.49,Compras.,PAGADO"""
+        self.csv = """23,31/10/2023,AUTONOMOS 000384 052107451009,-323.21,EUR,"3,585.82",EUR,1784,0012,,,"""
 
     def test_can_instantiate(self):
-        account_config = CCM()
-        self.assertEqual(type(account_config), CCM)
+        account_config = Unicaja()
+        self.assertEqual(type(account_config), Unicaja)
 
     def test_getters(self):
-        account_config = CCM()
+        account_config = Unicaja()
         line = csvline_to_line(self.csv, account_config)
-        date = datetime(2019, 1, 26)
-        description = "56 MAKRO TOLED/OL"
+        date = datetime(2023, 10, 31)
+        description = "AUTONOMOS 000384 052107451009"
         category = ""
-        debit = -23.49
+        debit = -323.21
         credit = 0
         self.assertEqual(account_config.get_date(line), date)
         self.assertEqual(account_config.get_description(line), description)

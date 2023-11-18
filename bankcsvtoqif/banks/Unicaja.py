@@ -23,32 +23,32 @@ from datetime import datetime
 
 
 class CCM(BankAccountConfig):
-    """ CCM Liberbank """
+    """ Unicaja """
 
     def __init__(self):
         BankAccountConfig.__init__(self)
         self.delimiter = ','
         self.quotechar = '"'
         self.dropped_lines = 5
-        self.default_source_account = 'Juanjo CCM MC 7017'
-        self.default_target_account = 'Family N26'
+        self.default_source_account = 'Family CCM Ck.'
+        self.default_target_account = 'Family CCM Ck.'
 
     def get_date(self, line):
-        s = line[0].split('-')
+        s = line[0].split('/')
         return datetime(int(s[2]), int(s[1]), int(s[0]))
 
     def get_description(self, line):
-        description = line[1]
+        description = line[2]
         return ' '.join(description.split())
 
     def get_category(self, line):
-        category = line[3]
+        category = line[2]
         return category
 
     def get_debit(self, line):
-        val = float(line[2])
-        return val if val >= 0 else 0
+        val = float(line[3])
+        return -val if val >= 0 else 0
 
     def get_credit(self, line):
-        val = float(line[2])
-        return -val if val < 0 else 0
+        val = float(line[3])
+        return val if val < 0 else 0

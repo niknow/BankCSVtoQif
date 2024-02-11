@@ -29,7 +29,7 @@ class N26(BankAccountConfig):
         BankAccountConfig.__init__(self)
         self.delimiter = ','
         self.quotechar = '"'
-        self.dropped_lines = 1
+        self.dropped_lines = 5
         self.default_source_account = 'Family N26'
         self.default_target_account = 'Family N26'
 
@@ -42,13 +42,12 @@ class N26(BankAccountConfig):
         return ' '.join(description.split())
 
     def get_category(self, line):
-        category = line[5]
-        return category
+        return line[3]
 
     def get_debit(self, line):
-        val = float(line[6])
+        val = float(line[5])
         return -val if val < 0 else 0
 
     def get_credit(self, line):
-        val = float(line[6])
+        val = float(line[5])
         return val if val >= 0 else 0

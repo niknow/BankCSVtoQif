@@ -28,7 +28,7 @@ Installation
 * Switch into BankCSVtoQif and install the python library::
 
     cd BankCSVtoQif
-    python setup.py install
+    pip install -r requirements.txt
 
 * Use the command line interface to display help::
 
@@ -56,6 +56,7 @@ Download the \*.csv-file from your online banking interface to the location of t
 is named `transaction_data.csv`. Invoke::
 
     python b2q.py db_giro transaction_data.csv
+    (for N26) python b2q.py N26 n26-csv-transactions.csv
 
 A file named `transaction_data.qif` will be created in the same directory. You can modify the name of the output
 file if you wish::

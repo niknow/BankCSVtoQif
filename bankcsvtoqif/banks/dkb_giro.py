@@ -40,13 +40,13 @@ class DKBGiro(BankAccountConfig):
         return datetime(int(s[2]), int(s[1]), int(s[0]))
 
     def get_description(self, line):
-        description = line[2] + ' ' + line[3] + ' ' + line[4]
+        description = line[5] + ' ' + line[7] + ' ' + line[10] + ' ' + line[11]
         return ' '.join(description.split())
 
     def get_debit(self, line):
-        val = self.get_amount(line[7])
+        val = self.get_amount(line[8])
         return -val if val < 0 else 0
 
     def get_credit(self, line):
-        val = self.get_amount(line[7])
+        val = self.get_amount(line[8])
         return val if val >= 0 else 0
